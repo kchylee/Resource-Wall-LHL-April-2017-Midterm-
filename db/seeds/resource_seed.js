@@ -13,6 +13,9 @@ exports.seed = function(knex, Promise) {
         table.string('password', 250);
         })
 
+        knex('users').insert({first_name: 'John'}, {last_name: 'Smith'}, {email: 'johnsmith@gmail.com'}, {handle: 'jsmith'}, {password: 'johnsmith'});
+        knex('users').insert({first_name: 'Jane'}, {last_name: 'Doe'}, {email: 'janedoe@gmail.com'}, {handle: 'jdoe'}, {password: 'janedoe'});
+
         knex.schema.createTable('resources', function(table){
         table.increments();
         table.string('url', 250);
@@ -20,6 +23,8 @@ exports.seed = function(knex, Promise) {
         table.text('description');
         table.foreign('created_by');
         })
+
+        knex('resources').insert({url: 'lighthouselabs.ca'}, {title: 'Lighthouse Labs'}, {description: 'Toronto web development bootcamp'}, {created_by: 1});
 
         knex.schema.createTable('category', function(table){
         table.increments();
@@ -32,6 +37,8 @@ exports.seed = function(knex, Promise) {
         table.bigInteger('user_id');
         table.bigInteger('resource_id');
         })
+
+        knex('likes').insert({user_id: 2}, {resource_id: 1});
 
         knex.schema.createTable('ratings', function(table){
         table.bigInteger('user_id');
