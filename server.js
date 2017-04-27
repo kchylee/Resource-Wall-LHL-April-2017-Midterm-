@@ -32,14 +32,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/styles", sass({
   src: __dirname + "/styles",
   dest: __dirname + "/public/styles",
-  debug: true,
+  debug: false,
   outputStyle: 'expanded'
 }));
+
 app.use(express.static("public"));
 
 // Mount all resource routes
-app.use("/api/users/", usersRoutes(knex));
-app.use("/api/resources/", resourcesRoutes(knex));
+app.use("/api/users", usersRoutes(knex));
+app.use("/api/resources", resourcesRoutes(knex));
 
 // Home page
 app.get("/", (req, res) => {

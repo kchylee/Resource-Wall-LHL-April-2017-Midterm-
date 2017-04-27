@@ -2,12 +2,12 @@
 "use strict";
 
 const express = require('express');
-const routerResources  = express.Router();
+const router  = express.Router();
 
 module.exports = (knex) => {
 
   // insert a resource.
-  routerResources.post("/", (req, res) => {
+  router.post("/", (req, res) => {
     knex("resources")
       .returning('*')
       .insert({
@@ -15,14 +15,26 @@ module.exports = (knex) => {
         title: req.body.title,
         description: req.body.description,
         created_by: req.body.createdBy
-      })
-      .then( (results) => {
-        res.json(results);
-    })
-      .catch(function(e) {
+      }).then( (res) => {
+          console.log("Response: ", res);
+      }).catch( (e) => {
         console.error(e);
       });
+    });
+
+
+  // get resources
+  router.get("/", (req, res) => {
+    knex
+      .select("*")
+      .from("resources")
+      .then( (results) => {
+        res.json(results);
+      })
+      .catch((e) => {
+        console.error(e);
+      })
   });
 
-  return routerResources;
+  return router;
 }
