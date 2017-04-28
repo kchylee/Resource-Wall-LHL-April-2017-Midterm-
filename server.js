@@ -19,6 +19,8 @@ const usersRoutes = require("./routes/users");
 const resourcesRoutes = require("./routes/resources");
 const searchRoutes = require("./routes/search");
 const catRoutes = require("./routes/categorize");
+const addCatItems = require("./routes/addToCategory");
+const getCat = require("./routes/getCategory");
 
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
@@ -43,6 +45,9 @@ app.use(express.static("public"));
 // Mount all resource routes
 app.use("/api/users", usersRoutes(knex));
 app.use("/api/resources", resourcesRoutes(knex));
+app.use("/api/category", catRoutes(knex));
+app.use("/api/add_res", addCatItems(knex));
+app.use("/api/category", getCat(knex));
 
 // Home page
 app.get("/", (req, res) => {

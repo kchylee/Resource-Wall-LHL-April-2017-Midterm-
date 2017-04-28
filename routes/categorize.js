@@ -4,9 +4,16 @@ const express = require('express');
 const router  = express.Router();
 
 module.exports = (knex) => {
-  router.post("/category", (req, res) => {
-        knex('category').insert({cat_name: req.body.name, user_id: req.session.user_id});
-        alert(`Category ${req.body.name} created!`);
+  router.post("/", (req, res) => {
+        knex('category')
+        .insert({
+          cat_name: req.body.catname,
+          user_id: 1      //Dummy ID
+        })
+        .then((result) => {
+          console.log(result);
+        });
+        res.redirect("/");
   });
   return router;
 }

@@ -12,6 +12,18 @@
   </head>
 
   <body>
-    <h1>Hello World!</h1>
+    <h1>Add category</h1>
+    <form action="/api/category" method="POST">
+      <input type="text" name="catname">
+      <input type="submit" value="submit">
+      </form>
+
+    <h1>Add category items</h1>
+    <form action="/api/add_res" method="POST">
+      <h2>Choose category</h2>
+      <select>
+        <option></option>
+      </select>
+    </form>
   </body>
 </html>
