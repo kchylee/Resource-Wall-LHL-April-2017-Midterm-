@@ -18,6 +18,8 @@ const knexLogger  = require('knex-logger');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
+require('./auth/passport')(passport);
+
 // Configure the local strategy for use by Passport.
 //
 // The local strategy require a `verify` function which receives the credentials
@@ -25,55 +27,45 @@ const LocalStrategy = require('passport-local').Strategy;
 // that the password is correct and then invoke `cb` with a user object, which
 // will be set at `req.user` in route handlers after authentication.
 
-const options = {
-  usernameField: 'email',
-  passwordField: 'password',
-  session: true
-}
-
-passport.use(new LocalStrategy(options,
-  function(username, password, cb) {
-
-    // const express = require('express');
-    // const router  = express.Router();
-
-    console.log('username:',username, 'password:', password);
-    // router.post("/login",
-    //   (req, res) => {
-      knex
-        .select("*")
-        .from("users")
-        .where("email","=",username)
-        .then((results) => {
-          if (console.log(results.length === 0)) {
-            console.log("login fail: username wrong")
-            return cb(null, false);
-          }
-          if (results[0].password !== password) {
-            console.log("results:", results)
-            console.log("results.password:", results.password, "password", password)
-            console.log("login fail: wrong password")
-
-            return cb(null, false);
-          }
-          console.log("login success")
-          return cb(null, results[0]);
-      })
-      .catch((err) => cb(err));
-    // });
-
-    }));
+// const options = {
+//   usernameField: 'email',
+//   passwordField: 'password',
+//   session: true
 // }
 
-// passport.use(new Strategy(
+// passport.use(new LocalStrategy(options,
 //   function(username, password, cb) {
-//     db.users.findByUsername(username, function(err, user) {
-//       if (err) { return cb(err); }
-//       if (!user) { return cb(null, false); }
-//       if (user.password != password) { return cb(null, false); }
-//       return cb(null, user);
-//     });
-//   }));
+
+//     // const express = require('express');
+//     // const router  = express.Router();
+
+//     console.log('username:',username, 'password:', password);
+//     // router.post("/login",
+//     //   (req, res) => {
+//       knex
+//         .select("*")
+//         .from("users")
+//         .where("email","=",username)
+//         .then((results) => {
+//           if (console.log(results.length === 0)) {
+//             console.log("login fail: username wrong")
+//             return cb(null, false);
+//           }
+//           if (results[0].password !== password) {
+//             console.log("results:", results)
+//             console.log("results.password:", results.password, "password", password)
+//             console.log("login fail: wrong password")
+
+//             return cb(null, false);
+//           }
+//           console.log("login success")
+//           return cb(null, results[0]);
+//       })
+//       .catch((err) => cb(err));
+//     // });
+
+//     }));
+// // }
 
 // Configure Passport authenticated session persistence.
 //
@@ -82,29 +74,24 @@ passport.use(new LocalStrategy(options,
 // typical implementation of this is as simple as supplying the user ID when
 // serializing, and querying the user record by ID from the database when
 // deserializing.
-passport.serializeUser(function(user, cb) {
-  console.log("serializing")
-  console.log(user)
-  cb(null, user.id);
-});
 
-// passport.deserializeUser(function(id, cb) {
-//   db.users.findById(id, function (err, user) {
-//     if (err) { return cb(err); }
-//     cb(null, user);
-//   });
+
+// passport.serializeUser(function(user, cb) {
+//   console.log("serializing")
+//   console.log(user)
+//   cb(null, user.id);
 // });
 
-passport.deserializeUser((id, done) => {
-  knex('users').where({id}).first()
-  .then((user) => { done(null, user); })
-  .catch((err) => { done(err,null); });
-});
+// passport.deserializeUser((id, done) => {
+//   knex('users').where({id}).first()
+//   .then((user) => { done(null, user); })
+//   .catch((err) => { done(err,null); });
+// });
 
 // Separated Routes for each Resource
-const usersRoutes = require("./routes/users");
+// const usersRoutes = require("./routes/users");
 // const loginRoutes = require("./routes/login");
-const signupRoutes = require("./routes/signup");
+// const signupRoutes = require("./routes/signup");
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
@@ -132,42 +119,45 @@ app.use("/styles", sass({
 app.use(express.static("public"));
 
 // Mount all resource routes
-app.use("/api/users", usersRoutes(knex));
+// app.use("/api/users", usersRoutes(knex));
 // app.use("/login", loginRoutes(knex));
-app.use("/signup", signupRoutes(knex));
+// app.use("/signup", signupRoutes(knex));
 
-// Home Page
-app.get("/", (req, res) => {
-  res.render("index", { user: req.user });
-});
+// // Home Page
+// app.get("/", (req, res) => {
+//   res.render("index", { user: req.user });
+// });
 
-// LOGIN ===============================
-// show the login form
-app.get('/login', (req, res) => {
-    console.log('get login')
-    res.render("login");
-});
+// // LOGIN ===============================
+// // show the login form
+// app.get('/login', (req, res) => {
+//     console.log('get login');
+//     res.render("login");
+// });
 
-app.post('/login',
-  passport.authenticate('local', { failureRedirect: '/login' }),
-  function(req, res) {
-    res.redirect('/');
-  });
+// app.post('/login',
+//   passport.authenticate('local', { failureRedirect: '/login' }),
+//   function(req, res) {
+//     res.redirect('/');
+//   });
 
-// // // SIGNUP =================================
-// // // show the signup form
-app.get('/signup',
-  passport.authenticate('local', { failureRedirect: '/signup' }),
-  (req, res) => {
-  res.render("/");
-});
+// // // // SIGNUP =================================
+// // // // show the signup form
+// app.get('/signup',
+//   (req, res) => {
+//     console.log('sign up');
+//     res.render("signup");
+// });
 
-// LOGOUT ==============================
-app.get('/logout',
-  function(req, res){
-    req.logout();
-    res.redirect('/');
-  });
+// // LOGOUT ==============================
+// app.get('/logout',
+//   function(req, res){
+//     req.logout();
+//     res.redirect('/');
+//   });
+
+// routes ======================================================================
+require('./routes/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);

@@ -6,6 +6,7 @@ const router  = express.Router();
 module.exports = (knex) => {
 
   router.post("/", (req, res) => {
+    console.log('signing up')
     knex
       .select("*")
       .from("users")
@@ -26,4 +27,5 @@ module.exports = (knex) => {
         })
     })
   return router;
+
 }
