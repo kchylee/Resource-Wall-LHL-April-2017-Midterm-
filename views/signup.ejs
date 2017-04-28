@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title>Login</title>
+        <title>Sign Up</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -17,19 +17,35 @@
         <div class="container" >
             <div class="col-sm-5 col-sm-offset-1">
                 <div class="modal-header">
-                    <h1><span class="fa fa-sign-in"></span> Login</h1>
+                    <h1><span class="fa fa-sign-in"></span> Sign Up </h1>
                 </div>
                 <div class="modal-body">
-                    <form action="/login" method="POST">
+                    <form action="/signup" method="post">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" class="form-control" name="first_name">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" class="form-control" name="last_name">
+                        </div>
                         <div class="form-group">
                             <label>Email</label>
                             <input type="text" class="form-control" name="email">
                         </div>
                         <div class="form-group">
+                            <label>User Name</label>
+                            <input type="text" class="form-control" name="handle">
+                        </div>
+                        <div class="form-group">
                             <label>Password</label>
                             <input type="password" class="form-control" name="password">
                         </div>
-                        <button type="submit" class="btn btn-warning btn-lg">Login</button>
+                        <div class="form-group">
+                            <label>Retype Password</label>
+                            <input type="password" class="form-control" name="password-retype">
+                        </div>
+                        <button type="submit" class="btn btn-warning btn-lg">Sign Up</button>
                     </form>
                     <hr>
                 </div>
