@@ -18,12 +18,16 @@
       <input type="submit" value="submit">
       </form>
 
-    <h1>Add category items</h1>
-    <form action="/api/add_res" method="POST">
-      <h2>Choose category</h2>
-      <select>
-        <option></option>
-      </select>
-    </form>
+    <h1>Add items to category</h1>
+
+      <form action="/api/add_res" method="POST">
+        <h2>Choose category</h2>
+        <select name="cat_id">
+          <option></option>
+        </select>
+        <input type="hidden" name="reso_id" value="1">
+        <input type="submit" value="Add">
+      </form>
+
   </body>
 </html>

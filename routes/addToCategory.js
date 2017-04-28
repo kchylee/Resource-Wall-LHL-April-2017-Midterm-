@@ -7,6 +7,8 @@ module.exports = (knex) => {
   router.post("/", (req, res) => {
   //Gets req.body.cat_id from dropdown of existing categories.
   //Create dropdown menu in html using <select> and <option>. Submit using <input type="submit">
+    console.log("cat_id: " + req.body.cat_id);
+    console.log("reso_id: " + req.body.reso_id);
         knex('cat_reso')
         .insert({
           cat_id: req.body.cat_id,
@@ -15,7 +17,7 @@ module.exports = (knex) => {
         .then((result) => {
           console.log(result);
         })
-        alert(`Resource ${req.body.name} added!`);
+    res.redirect("/");
   });
   return router;
 }

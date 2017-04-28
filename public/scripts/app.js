@@ -18,7 +18,7 @@ $(() => {
       url: "/api/category",
   }).done((category) => {
     for (cat of category) {
-      $("<option>").text(cat.cat_name).appendTo($("body").find("select"));
+      $(`<option value=${cat.id}>`).text(cat.cat_name).appendTo($("body").find("select"));
     }
   });
 
@@ -65,12 +65,6 @@ $(() => {
       }
     })
   }
-
-
-
-
-
-
 
 // Ends jquery document ready.
 });
