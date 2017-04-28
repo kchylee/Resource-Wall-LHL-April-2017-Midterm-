@@ -4,24 +4,51 @@ $(() => {
 
 
   // Resource functions.
-  function getResources () {
-    console.log("I'm a placeholder for a function.");
+  const getUserResources = (userID) => {
+    $.ajax({
+      method: "GET",
+      url: `/api/resources/json/${userID}`
+    })
+    .done( (data) => {
+      //console.log("DATA from getUserResources: ", data);
+    })
+    .fail( (error) => {
+      console.error(error);
+    })
   };
+  getUserResources(1);
+
+
+  const getResource = (id) => {
+    $.ajax({
+      method: "GET",
+      url: `/api/resources/${id}`
+    })
+    .done( (data) => {
+      $("#update-form-title").val(data[0].title);
+      $("#update-form-url").val(data[0].url);
+      $("#update-form-description").val(data[0].description);
+      $("#update-form-created_by").val(data[0].created_by);
+      $("#update-form-resourceID").val(data[0].id);
+    })
+    .fail( (error) => {
+      console.error(error);
+    })
+  };
+  getResource(45);
 
   const insertResource = (formData) => {
     $.ajax({
       method: "POST",
       url: "/api/resources",
-      data: formData,
-      success: function (data, status, obj) {
-        //console.log("status: ", status);
-        //console.log("object: ", obj);
-        //console.log("data: ", data);
-      },
-      error: function (obj1, e, obj2) {
-        console.log(e);
-      }
-    });
+      data: formData
+    })
+    .done( (response) => {
+      console.log("Response from insert: ", response);
+    })
+    .fail( (e) => {
+      console.log("fail from insert: ", e);
+    })
   };
 
   // Insert resource. Catches the event from a form and inserts data in the DB
