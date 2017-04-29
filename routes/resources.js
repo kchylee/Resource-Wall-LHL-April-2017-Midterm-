@@ -79,7 +79,7 @@ module.exports = (knex) => {
       created_by: req.body.created_by
     })
     .update({
-      archived: req.body.archived,
+      archived: 1,
     })
     .then( (results) => {
       //console.log("Res after update: ", res)
