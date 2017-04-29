@@ -71,6 +71,25 @@ module.exports = (knex) => {
       });
   });
 
+  // "Delete" a resource.
+  router.delete("/", (req, res) => {
+    knex(tableResources)
+    .where({
+      id: req.body.id,
+      created_by: req.body.created_by
+    })
+    .update({
+      archived: req.body.archived,
+    })
+    .then( (results) => {
+      //console.log("Res after update: ", res)
+      res.status(200).send(results);
+    }, (rej) => {
+      //console.error("Error when trying to update: ", rej);
+      res.status(400).send(rej);
+    })
+  });
+
   // get all resources. We will get rid of this later.
   router.get("/", (req, res) => {
     knex
@@ -78,7 +97,7 @@ module.exports = (knex) => {
       .from(tableResources)
       .then( (results) => {
         res.status(200).json(results);
-      }, (reject) => {
+      }, (rej) => {
         res.status(400).send(rej);
       })
   });
