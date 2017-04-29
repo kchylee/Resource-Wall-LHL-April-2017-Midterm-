@@ -9,6 +9,8 @@
 
     <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
     <script type="text/javascript" src="/scripts/app.js"></script>
+
+    <script src="https://use.fontawesome.com/48a35a65fe.js"></script>
   </head>
 
   <body>
@@ -29,11 +31,17 @@
         <input type="submit" value="Add">
       </form>
 
-    <h1>Search Resources</h1>
+    <div id="search_results">
+      <h1>Search Resources</h1>
+      <form id="search" method="GET" action="/api/search">
+        <input id="query" type="text" name="query">
+        <input type="submit" value="Search">
+      </form>
+    </div>
 
-    <form id="search" method="GET" action="/api/search">
-      <input id="query" type="text" name="query">
-      <input type="submit" value="Search">
+    <h1>Add likes</h1>
+    <form action="/api/like" method="POST">
+      <i class="fa fa-heart" aria-hidden="true"></i>
     </form>
 
   </body>

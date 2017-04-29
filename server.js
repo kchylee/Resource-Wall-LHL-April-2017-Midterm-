@@ -21,6 +21,7 @@ const searchRoutes = require("./routes/search");
 const catRoutes = require("./routes/categorize");
 const addCatItems = require("./routes/addToCategory");
 const getCat = require("./routes/getCategory");
+const addLikes = require("./routes/likes");
 
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
@@ -49,6 +50,7 @@ app.use("/api/category", catRoutes(knex));
 app.use("/api/add_res", addCatItems(knex));
 app.use("/api/category", getCat(knex));
 app.use("/api/search/", searchRoutes(knex));
+app.use("/api/like", addLikes(knex));
 
 // Home page
 app.get("/", (req, res) => {

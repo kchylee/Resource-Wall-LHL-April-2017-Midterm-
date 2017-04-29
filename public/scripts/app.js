@@ -26,28 +26,37 @@ $(() => {
     console.log(searchFormData);
     $.ajax({
       method: "GET",
-      url: `/api/search/search/${searchFormData}`,
+      url: `/api/search/${searchFormData}`,
     }).done( (result) => {
-      console.log(result);
-      console.log('got results from db query');
-      $("<h2>").text("Results:").appendTo($("body"));
-      // for (resu of result) {
-        // console.log('back in search ajax: ' + resu[0])
-        $("<div>").text(result[0].url).appendTo($("body"));
-      // }
+      $("<h2>").text("Results:").appendTo($("#search_results"));
+      result.rows.forEach( (row) => {
+        $("<div>").text(row.title).appendTo($("#search_results"));
+      })
     })
       .fail( (e) => {
         console.error(e);
       })
   }
 
+  const addLike = () => {
+    $.ajax({
+      method: "POST",
+      url: "/api/like"
+    }).done( () => {
+      $('#resource_id').find('.fa-heart').css('color', 'red'); //NEEDS WORK; heart should be highlighted according to Like table
+    })
+  }
+
   //Searches database for resources
   $('#search').on('submit', () => {
     event.preventDefault();
-
     searchRes($("#query").val());
-
   });
+
+  $('#resource_id .fa-heart').on('click', () => {
+    event.preventDefault();
+    addLike();
+  })
 
 
 
@@ -91,8 +100,8 @@ $(() => {
       method: "POST",
       url: "/api/comments",
       data: string,
-      success: function(userId, resID, text){
-        knex('comments').insert({user_id: userId, resource_id: resID, comment: text});
+      success: function(userId, resId, text){
+        knex('comments').insert({user_id: userId, resource_id: resId, comment: text});
       }
     })
   }
