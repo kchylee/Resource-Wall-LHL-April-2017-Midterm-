@@ -12,6 +12,6 @@ module.exports = (knex) => {
       resource_id: req.body.reso_id
     })
     res.status(200);
-    });
+    })
   return router;
 }
