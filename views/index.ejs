@@ -9,9 +9,44 @@
 
     <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
     <script type="text/javascript" src="/scripts/app.js"></script>
+
+    <script src="https://use.fontawesome.com/48a35a65fe.js"></script>
   </head>
 
   <body>
-    <h1>Hello World!</h1>
+  <%- include("partials/_insertResource"); %>
+  <%- include("partials/_updateResource"); %>
+  <%- include("partials/_listOfResources"); %>
+
+    <h1>Add category</h1>
+    <form action="/api/category" method="POST">
+      <input type="text" name="catname">
+      <input type="submit" value="submit">
+      </form>
+
+    <h1>Add items to category</h1>
+
+      <form action="/api/add_res" method="POST">
+        <h2>Choose category</h2>
+        <select name="cat_id">
+          <option></option>
+        </select>
+        <input type="hidden" name="reso_id" value="1">
+        <input type="submit" value="Add">
+      </form>
+
+    <div id="search_results">
+      <h1>Search Resources</h1>
+      <form id="search" method="GET" action="/api/search">
+        <input id="query" type="text" name="query">
+        <input type="submit" value="Search">
+      </form>
+    </div>
+
+    <h1>Add likes</h1>
+    <form action="/api/like" method="POST">
+      <i class="fa fa-heart" aria-hidden="true"></i>
+    </form>
+
   </body>
 </html>
