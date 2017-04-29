@@ -20,82 +20,6 @@ const LocalStrategy = require('passport-local').Strategy;
 
 require('./auth/passport')(passport);
 
-// Configure the local strategy for use by Passport.
-//
-// The local strategy require a `verify` function which receives the credentials
-// (`username` and `password`) submitted by the user.  The function must verify
-// that the password is correct and then invoke `cb` with a user object, which
-// will be set at `req.user` in route handlers after authentication.
-
-// const options = {
-//   usernameField: 'email',
-//   passwordField: 'password',
-//   session: true
-// }
-
-// passport.use(new LocalStrategy(options,
-//   function(username, password, cb) {
-
-//     // const express = require('express');
-//     // const router  = express.Router();
-
-//     console.log('username:',username, 'password:', password);
-//     // router.post("/login",
-//     //   (req, res) => {
-//       knex
-//         .select("*")
-//         .from("users")
-//         .where("email","=",username)
-//         .then((results) => {
-//           if (console.log(results.length === 0)) {
-//             console.log("login fail: username wrong")
-//             return cb(null, false);
-//           }
-//           if (results[0].password !== password) {
-//             console.log("results:", results)
-//             console.log("results.password:", results.password, "password", password)
-//             console.log("login fail: wrong password")
-
-//             return cb(null, false);
-//           }
-//           console.log("login success")
-//           return cb(null, results[0]);
-//       })
-//       .catch((err) => cb(err));
-//     // });
-
-//     }));
-// // }
-
-// Configure Passport authenticated session persistence.
-//
-// In order to restore authentication state across HTTP requests, Passport needs
-// to serialize users into and deserialize users out of the session.  The
-// typical implementation of this is as simple as supplying the user ID when
-// serializing, and querying the user record by ID from the database when
-// deserializing.
-
-
-// passport.serializeUser(function(user, cb) {
-//   console.log("serializing")
-//   console.log(user)
-//   cb(null, user.id);
-// });
-
-// passport.deserializeUser((id, done) => {
-//   knex('users').where({id}).first()
-//   .then((user) => { done(null, user); })
-//   .catch((err) => { done(err,null); });
-// });
-
-// Separated Routes for each Resource
-// const usersRoutes = require("./routes/users");
-// const loginRoutes = require("./routes/login");
-// const signupRoutes = require("./routes/signup");
-
-// Load the logger first so all (static) HTTP requests are logged to STDOUT
-// 'dev' = Concise output colored by response status for development use.
-//         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
 app.use(morgan('dev'));
 app.use(require('cookie-parser')());
 app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
@@ -117,44 +41,6 @@ app.use("/styles", sass({
   outputStyle: 'expanded'
 }));
 app.use(express.static("public"));
-
-// Mount all resource routes
-// app.use("/api/users", usersRoutes(knex));
-// app.use("/login", loginRoutes(knex));
-// app.use("/signup", signupRoutes(knex));
-
-// // Home Page
-// app.get("/", (req, res) => {
-//   res.render("index", { user: req.user });
-// });
-
-// // LOGIN ===============================
-// // show the login form
-// app.get('/login', (req, res) => {
-//     console.log('get login');
-//     res.render("login");
-// });
-
-// app.post('/login',
-//   passport.authenticate('local', { failureRedirect: '/login' }),
-//   function(req, res) {
-//     res.redirect('/');
-//   });
-
-// // // // SIGNUP =================================
-// // // // show the signup form
-// app.get('/signup',
-//   (req, res) => {
-//     console.log('sign up');
-//     res.render("signup");
-// });
-
-// // LOGOUT ==============================
-// app.get('/logout',
-//   function(req, res){
-//     req.logout();
-//     res.redirect('/');
-//   });
 
 // routes ======================================================================
 require('./routes/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
