@@ -1,0 +1,20 @@
+
+
+
+<div class="form-container">
+  <form action="/api/resources/update?_method=PUT" method="POST" id="update-resource">
+    <label for="title">Title</label>
+    <input type="text" id="update-form-title" name="title" value="">
+
+    <label for="url">URL</label>
+    <input type="text" id="update-form-url" name="url" value="">
+
+    <label for="description">Description</label>
+    <input type="textarea" id="update-form-description" name="description" value="">
+
+    <input type="hidden" id="update-form-created_by" name="created_by" value="">
+    <input type="hidden" id="update-form-resourceID" name="id" value="">
+
+    <button name="btnUpdateResource" value="Submit">Update Resource</button>
+  </form>
+</div>
