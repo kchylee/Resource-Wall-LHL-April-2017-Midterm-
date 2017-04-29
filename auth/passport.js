@@ -7,6 +7,7 @@ const ENV         = process.env.ENV || "development";
 const knexConfig  = require("../knexfile");
 const knex        = require("knex")(knexConfig[ENV]);
 const knexLogger  = require('knex-logger');
+const bcrypt      = require('bcrypt-nodejs')
 
 // load up the user model
 // var User       = require('../app/models/user');
@@ -41,8 +42,11 @@ module.exports = function(passport) {
     });
 
     passport.deserializeUser((id, done) => {
+      console.log("deserializing")
       knex('users').where({id}).first()
-      .then((user) => { done(null, user); })
+      .then((user) => {
+        console.log(user);
+        done(null, user); })
       .catch((err) => { done(err,null); });
     });
 
@@ -87,7 +91,7 @@ module.exports = function(passport) {
       session: true
     }
 
-    passport.use('local', new LocalStrategy(options,
+    passport.use('local-login', new LocalStrategy(options,
       function(username, password, cb) {
 
         // const express = require('express');
@@ -105,7 +109,7 @@ module.exports = function(passport) {
             console.log("login fail: username wrong")
             return cb(null, false);
           }
-          if (results[0].password !== password) {
+          if (! bcrypt.compareSync(password, results[0].password) ) { //results[0].password !== password) {
             console.log("results:", results)
             console.log("results.password:", results.password, "password", password)
             console.log("login fail: wrong password")
@@ -117,16 +121,58 @@ module.exports = function(passport) {
         })
         .catch((err) => cb(err));
     }));
-};
+
     // =========================================================================
     // LOCAL SIGNUP ============================================================
     // =========================================================================
-    // passport.use('local-signup', new LocalStrategy({
-    //     // by default, local strategy uses username and password, we will override with email
-    //     usernameField : 'email',
-    //     passwordField : 'password',
-    //     passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
-    // },
+    passport.use('local-signup', new LocalStrategy({
+        // by default, local strategy uses username and password, we will override with email
+        usernameField : 'email',
+        passwordField : 'password',
+        passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
+    },
+    function(req, username, password, done) {
+        console.log('signing up')
+        knex
+        .select("*")
+        .from("users")
+        .where("email","=",req.body.email)
+        .then((results) => {
+          if (results.length !== 0) {
+            console.log("email already exist");
+            return done(null, false)
+            //res.redirect('/signup')
+          }
+          else {
+            knex("users")
+            .insert({"first_name": req.body.first_name,
+                "last_name": req.body.last_name,
+                "email": req.body.email,
+                "handle": req.body.handle,
+                "password": bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(8), null)}) //req.body.password})
+            .then(() => {
+                console.log('Done insert');
+                let user_id = knex
+                            .select("*")
+                            .from("users")
+                            .where("email","=",req.body.email).then((results) => {
+                                let user = {
+                                    id: results[0].id,
+                                    local: {
+                                    password: results[0].password, //req.body.password,
+                                    email: req.body.email
+                                    }
+                                }
+                                console.log(user);
+                                return done(null, user);
+                                })
+          })
+        }
+    });
+}))
+}
+
+
     // function(req, email, password, done) {
     //     if (email)
     //         email = email.toLowerCase(); // Use lower-case e-mails to avoid case-sensitive e-mail matching
