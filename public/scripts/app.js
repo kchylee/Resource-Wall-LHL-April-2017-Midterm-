@@ -22,6 +22,37 @@ $(() => {
     }
   });
 
+  const searchRes = (searchFormData) => {
+    console.log(searchFormData);
+    $.ajax({
+      method: "GET",
+      url: `/api/search/search/${searchFormData}`,
+    }).done( (result) => {
+      console.log(result);
+      console.log('got results from db query');
+      $("<h2>").text("Results:").appendTo($("body"));
+      // for (resu of result) {
+        // console.log('back in search ajax: ' + resu[0])
+        $("<div>").text(result[0].url).appendTo($("body"));
+      // }
+    })
+      .fail( (e) => {
+        console.error(e);
+      })
+  }
+
+  //Searches database for resources
+  $('#search').on('submit', () => {
+    event.preventDefault();
+
+    searchRes($("#query").val());
+
+  });
+
+
+
+
+
   // Resource functions.
   const getResources = () => {
     console.log("I'm a placeholder for a function.");

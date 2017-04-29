@@ -48,6 +48,7 @@ app.use("/api/resources", resourcesRoutes(knex));
 app.use("/api/category", catRoutes(knex));
 app.use("/api/add_res", addCatItems(knex));
 app.use("/api/category", getCat(knex));
+app.use("/api/search/", searchRoutes(knex));
 
 // Home page
 app.get("/", (req, res) => {
