@@ -2,6 +2,56 @@
 // jquery document ready
 $(() => {
 
+  //Fills drop down menu with category options
+  $.ajax({
+      method: "GET",
+      url: "/api/category",
+  }).done((category) => {
+    for (cat of category) {
+      $(`<option value=${cat.id}>`).text(cat.cat_name).appendTo($("body").find("select"));
+    }
+  });
+
+  const searchRes = (searchFormData) => {
+    console.log(searchFormData);
+    $.ajax({
+      method: "GET",
+      url: `/api/search/${searchFormData}`,
+    }).done( (result) => {
+      $("<h2>").text("Results:").appendTo($("#search_results"));
+      result.rows.forEach( (row) => {
+        $("<div>").text(row.title).appendTo($("#search_results"));
+      })
+    })
+      .fail( (e) => {
+        console.error(e);
+      })
+  }
+
+  const addLike = () => {
+    $.ajax({
+      method: "POST",
+      url: "/api/like"
+    }).done( () => {
+      $('#resource_id').find('.fa-heart').css('color', 'red'); //NEEDS WORK; heart should be highlighted according to Like table
+    })
+  }
+
+  //Searches database for resources
+  $('#search').on('submit', () => {
+    event.preventDefault();
+    searchRes($("#query").val());
+  });
+
+  $('#resource_id .fa-heart').on('click', () => {
+    event.preventDefault();
+    addLike();
+  })
+
+
+
+
+
 
   //helpers
 
@@ -79,8 +129,10 @@ $(() => {
   };
 
   // Insert resource. Catches the event from a form and inserts data in the DB
+
   const $insertResourceForm = $('#insert-resource');
   $insertResourceForm.on('submit', (event) => {
+
     event.preventDefault();
     //validate content here: URL, title and description.
     if (( validateURL($('#insert-resource')[0].elements.url.value) === false ) || ( $('#insert-resource')[0].elements.title.value === "" )) {
@@ -95,7 +147,16 @@ $(() => {
 
 
 
-
+  const addComment = (formData) => {
+    $.ajax({
+      method: "POST",
+      url: "/api/comments",
+      data: string,
+      success: function(userId, resId, text){
+        knex('comments').insert({user_id: userId, resource_id: resId, comment: text});
+      }
+    })
+  }
 
 // Ends jquery document ready.
 });

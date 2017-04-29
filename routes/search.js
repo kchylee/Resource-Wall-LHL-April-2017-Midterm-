@@ -4,26 +4,19 @@ const express = require('express');
 const router  = express.Router();
 
 module.exports = (knex) => {
-
-  router.get("/search", (req, res) => {
-    let resultArr = [];
-    if (req.body.query.trim().length = ""){ //Checks if query is empty
+  router.get("/:query", (req, res) => {
+    if (req.params.query.trim() === ""){ //Checks if query is empty
       res.status(400);
     }else{
-     queryArr = req.body.query.split(" "); //Splits query into array by space (if exists)
-      queryArr.forEach((query) => {
+      let qArr = req.params.query.replace(/\s/g, "%'), UPPER('%");
         knex
-        .select("*")
-        .from("resources")
-        .where(description, 'like', `%${query}%`)
-        .orWhere(title, 'like', `%${query}%`)
-        .orWhere(created_by, 'like', `%${query}%`)
-        .then((results) => {
-          resultArr.push(results);
-          res.json(resultArr);
+        .raw(`select * from resources where UPPER(title) like any (array[UPPER('%${qArr}%')]) or UPPER(description) like any (array[UPPER('%${qArr}%')])`)
+        .then( (results) => {
+          console.log(results);
+          res.json(results);
         });
-      });
-    }
+    };
   });
-  return router;
+return router;
 }
+
