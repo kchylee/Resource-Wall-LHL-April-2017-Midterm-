@@ -23,13 +23,25 @@ const catRoutes = require("./routes/categorize");
 const addCatItems = require("./routes/addToCategory");
 const getCat = require("./routes/getCategory");
 const addLikes = require("./routes/likes");
+// passport for user authentication
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
+require('./auth/passport')(passport);
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
 //         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes,
 //         and uncolored for all other codes.
+
 app.use(morgan('dev'));
+app.use(require('cookie-parser')());
+app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+
+// Initialize Passport and restore authentication state, if any, from the
+// session.
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Log knex SQL queries to STDOUT as well
 app.use(knexLogger(knex));
@@ -57,9 +69,12 @@ app.use("/api/search/", searchRoutes(knex));
 app.use("/api/like", addLikes(knex));
 
 // Home page
-app.get("/", (req, res) => {
-  res.render("index");
-});
+// app.get("/", (req, res) => {
+//   res.render("home");
+// });
+
+// routes ======================================================================
+require('./routes/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
