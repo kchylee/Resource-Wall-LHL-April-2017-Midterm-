@@ -13,6 +13,5 @@ module.exports = (knex) => {
     })
     res.status(200);
     })
-  };
   return router;
 }
