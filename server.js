@@ -25,6 +25,7 @@ const getCat = require("./routes/getCategory");
 const addLikes = require("./routes/likes");
 // passport for user authentication
 const passport = require('passport');
+const flash = require('connect-flash');
 const LocalStrategy = require('passport-local').Strategy;
 
 require('./auth/passport')(passport);
@@ -42,6 +43,7 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: false, save
 // session.
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 
 // Log knex SQL queries to STDOUT as well
 app.use(knexLogger(knex));

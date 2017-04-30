@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 // jquery document ready
 $(() => {
 
