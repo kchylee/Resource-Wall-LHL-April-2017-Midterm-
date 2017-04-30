@@ -9,6 +9,7 @@ const bodyParser  = require("body-parser");
 const methodOverride = require('method-override')
 const sass        = require("node-sass-middleware");
 const app         = express();
+const util = require('util');
 
 const knexConfig  = require("./knexfile");
 const knex        = require("knex")(knexConfig[ENV]);
@@ -30,6 +31,8 @@ const addRating = require("./routes/rating");
 const passport = require('passport');
 const flash = require('connect-flash');
 const LocalStrategy = require('passport-local').Strategy;
+const GitHubStrategy = require('passport-github2').Strategy;
+const partials = require('express-partials');
 
 require('./auth/passport')(passport);
 
@@ -47,6 +50,8 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: false, save
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+app.use(methodOverride());
+app.use(partials());
 
 // Log knex SQL queries to STDOUT as well
 app.use(knexLogger(knex));
@@ -58,7 +63,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/styles", sass({
   src: __dirname + "/styles",
   dest: __dirname + "/public/styles",
-  debug: false,
+  debug: true,
   outputStyle: 'expanded'
 }));
 
@@ -76,9 +81,8 @@ app.use("/api/comment", addComment(knex));
 app.use("/api/rating", addRating(knex));
 app.use("/api/unlike", unlike(knex));
 
-// Home page
 app.get("/", (req, res) => {
-  res.render("index");
+   res.render("userhome");
 });
 
 // routes ======================================================================

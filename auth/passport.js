@@ -9,6 +9,10 @@ const knex        = require("knex")(knexConfig[ENV]);
 const knexLogger  = require('knex-logger');
 const bcrypt      = require('bcrypt-nodejs')
 
+const GitHubStrategy = require('passport-github2').Strategy;
+const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
+const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+
 module.exports = function(passport) {
 
     // =========================================================================
@@ -24,12 +28,21 @@ module.exports = function(passport) {
     });
 
     passport.deserializeUser((id, done) => {
-      //console.log("deserializing")
+      console.log("deserializing:", id)
       knex('users').where({id}).first()
       .then((user) => {
         //console.log(user);
         done(null, user); })
       .catch((err) => { done(err,null); });
+    });
+
+    // passport.serializeUser(function(user, done) {
+    //   done(null, user);
+    // });
+
+    passport.deserializeUser(function(obj, done) {
+        console.log("github: deserializing:", obj)
+        done(null, obj);
     });
 
     // =========================================================================
@@ -161,4 +174,24 @@ module.exports = function(passport) {
         })
         .catch((e)=>{ console.log(e) })
       }));
+
+
+    passport.use(new GitHubStrategy({
+        clientID: GITHUB_CLIENT_ID,
+        clientSecret: GITHUB_CLIENT_SECRET,
+        callbackURL: "http://127.0.0.1:8080/auth/github/callback"
+      },
+      function(accessToken, refreshToken, profile, done) {
+        // asynchronous verification, for effect...
+        process.nextTick(function () {
+
+          // To keep the example simple, the user's GitHub profile is returned to
+          // represent the logged-in user.  In a typical application, you would want
+          // to associate the GitHub account with a user record in your database,
+          // and return that user instead.
+          return done(null, profile);
+        });
+      }
+    ));
+
 }
