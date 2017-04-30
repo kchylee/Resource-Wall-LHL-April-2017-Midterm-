@@ -28,24 +28,31 @@
     <div class="row">
 
         <!-- LOCAL INFORMATION -->
-        <div class="col-sm-6">
+        <!-- <div class="col-sm-6"> -->
             <div class="well">
-                <h3><span class="fa fa-user"></span> Local</h3>
+                <h3><span class="fa fa-user"></span> </h3>
 
-                <% if (user) { %>
-                    <p>
-                        <strong>id</strong>: <%= user.id %><br>
-                        <strong>email</strong>: <%= user.email %><br>
-                        <strong>password</strong>: <%= user.password %>
-                    </p>
-
-                    <a href="/unlink/local" class="btn btn-default">Unlink</a>
-                <% } else { %>
-                    <a href="/connect/local" class="btn btn-default">Connect Local</a>
-                <% } %>
-
+                <% if (!user.displayName) { %>
+                    <ul>
+                     <li><strong>First name</strong>: <%= user.first_name %></li>
+                     <li><strong>Last name</strong>: <%= user.last_name %></li>
+                     <li><strong>Username</strong>: <%= user.handle %></li>
+                     <li><strong>email</strong>: <%= user.email %></li>
+                     <br>
+                    </ul>
+                    <a href="/change_password" class="btn btn-default">Change Password</a>
+                <% } if (user.displayName) { %>
+                    <ul>
+                     <li><strong>ID</strong>: <%= user.id %></li>
+                     <li><strong>Username</strong>: <%= user.username %></li>
+                     <li><strong>Name</strong>: <%= user.displayName %></li>
+                     <li><strong>Email</strong>: <%= user.emails[0].value %></li>
+                     <li><strong>Github Profile</strong>: <a target="_blank" href=<%= user.profileUrl %>> <%= user.profileUrl %></a></li>
+                     <br>
+                    </ul>
+                <% }; %>
             </div>
-        </div>
+        <!-- </div> -->
     </div>
 </div>
 </body>

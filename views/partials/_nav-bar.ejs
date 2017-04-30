@@ -2,15 +2,26 @@
   <div class="container-fluid">
     <div class="navbar-header">
     <% if (user !== undefined) { %>
+      <% if (user.handle !== undefined) { %>
       <a class="navbar-brand" href="#"><%= user.handle%></a>
+      <% } %>
+      <% if (user.username !== undefined) { %>
+      <a class="navbar-brand" href="#"><%= user.username%></a>
+      <% } %>
     <% } else { %>
       <a class="navbar-brand" href="#">Resource Wall</a>
     <% } %>
     </div>
     <ul class="nav navbar-nav navbar-right">
       <% if (user !== undefined) { %>
-      <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Your Profile</a></li>
-      <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout </a></li>
+        <% if (user.handle !== undefined) { %>
+        <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Your Profile</a></li>
+        <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout </a></li>
+        <% } %>
+        <% if (user.username !== undefined) { %>
+        <li><a href="/auth/github/callback"><span class="glyphicon glyphicon-user"></span> Your Profile</a></li>
+        <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout </a></li>
+        <% } %>
       <% } else { %>
       <li><a href="/login" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-log-in"></span> Login </a></li>
       <% } %>
