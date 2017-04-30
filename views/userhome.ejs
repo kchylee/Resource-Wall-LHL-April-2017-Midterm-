@@ -14,29 +14,14 @@
     <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
     <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
 
-
     <%- include("partials/_navigation_head_items"); %>
 
   </head>
   <body>
   <%- include("partials/_navigation"); %>
-
-  <div class="container">
-    <div class="row">
-      <div class="col-xs-2 col-md-3">
-          <div id="resourcedata">
-            <div class="resource" data-toggle="modal" data-target="#resourceModal" data-id="1">
-              <div class="title">Master Garate's Portfolio</div>
-              <div class="url">http://www.garatephotography.com</div>
-              <div class="description">This is a sample description to get an idea of how hard this css crap is going to be.</div>
-              <div class="owner">by: @garateca</div>
-              <div class="stats">loved by: <span class="badge">10</span></div>
-            </div>
-          </div>
-      </div>
-
-
-    </div>
+<input id="resourcesearchinput" />
+  <!-- this container will hold the data from all users -->
+  <div id="resource-container" class="container">
 
   </div> <!-- /container -->
 
@@ -52,7 +37,7 @@
       </div>
       <div class="modal-body">
         <h5>url here</h5>
-        <h6>Description</h6>
+        <h6>Description here</h6>
         <form action="/api/comments/?_method=PUT" method="POST">
           <div class="form-group">
             <label for="comments-text" class="control-label">Add a comment:</label>

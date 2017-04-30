@@ -59,6 +59,22 @@ $(() => {
     let res = new RegExp('(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})', 'i');
     return res.test(url);
   }
+
+  // runs js searcher (jquery plugin)
+  $("#resource-container").searcher({
+      itemSelector: ".resource",
+      textSelector: "div",
+      inputSelector: "#resourcesearchinput",
+      toggle: function(item, containsText) {
+          // use a typically jQuery effect instead of simply showing/hiding the item element
+          if (containsText)
+              $(item).fadeIn();
+          else
+              $(item).fadeOut();
+      }
+  });
+
+
   // Helpers end
 
   // Resource functions.
@@ -130,21 +146,47 @@ $(() => {
   const getAllResources = (userID) => {
     $.ajax({
       method: "GET",
-      url: "/api/resources/json"
+      url: "/api/resources"
     })
     .done( (data) => {
-      $.each(data, (index, arrvalue) => {
-        $temprow = $("<tr>").attr("data-id", arrvalue.id).appendTo($("#table-resources"));
-        $.each(arrvalue, (key, objvalue) => {
-          //$("<td>").text(objvalue).appendTo($temprow);
-          console.log(objvalue);
-        })
-      });
+
+      let colsPerRow = 4;
+      let numOfRowsToCreate = Math.ceil(data.length / colsPerRow);
+      let arrIndex = 0;
+      for (let rows = 1; rows <= numOfRowsToCreate; rows++) {
+
+        $resourcerow = $("<div>").addClass("row");
+
+        for (let cols = 1; cols <= colsPerRow; cols++) {
+          if (data[arrIndex] === undefined) {
+            break;
+          }
+          $resourcecol = $("<div>").addClass("col-xs-2 col-md-3").appendTo($resourcerow);
+          $resourcedata = $("<div>").attr("id", "resourcedata").appendTo($resourcecol);
+
+          $resource = $("<div>").addClass("resource")
+                      .attr({
+                        'data-toggle': 'modal',
+                        'data-target': '#resourceModal',
+                        'data-id': data[arrIndex].id,
+                        id: data[arrIndex].id
+                      }).appendTo($resourcedata)
+
+          $resource.append($("<div>").addClass("title").text(data[arrIndex].title));
+          $resource.append($("<div>").addClass("url").text(data[arrIndex].url));
+          $resource.append($("<div>").addClass("description").text(data[arrIndex].description));
+          $resource.append($("<div>").addClass("handle").text(data[arrIndex].created_by));
+          $resource.append($("<div>").addClass("stats").text("Loved by:"));
+          arrIndex += 1
+        }
+        $("#resource-container").append($resourcerow);
+      }
     })
     .fail( (error) => {
       console.error(error);
     })
   };
+  getAllResources(1);
 
   // Insert resource. Catches the event from a form and inserts data in the DB
   $('#insert-resource').on('submit', (event) => {
