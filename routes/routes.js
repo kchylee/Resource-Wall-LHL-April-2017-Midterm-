@@ -34,14 +34,6 @@ module.exports = function(app, passport) {
     failureFlash : true // allow flash messages
   }));
 
-  // passport.serializeUser(function(user, done) {
-  //   done(null, user);
-  // });
-
-  // passport.deserializeUser(function(obj, done) {
-  //   done(null, obj);
-  // });
-
   // github ===============================
   // show the login form
   // GET /auth/github
@@ -62,16 +54,15 @@ module.exports = function(app, passport) {
   //   login page.  Otherwise, the primary route function will be called,
   //   which, in this example, will redirect the user to the home page.
   app.get('/auth/github/callback',
-    passport.authenticate('github', {
-      failureRedirect: '/login' }),
+    passport.authenticate('github', { failureRedirect: '/login' }),
     function(req, res) {
-      console.log(req.user)
-      res.render('profile.ejs', {user_github: req.user});
+      console.log('authenticate:', req.user)
+      res.render('profile.ejs', { user: req.user });
     });
 
   // PROFILE SECTION =========================
   app.get('/profile', isLoggedIn, function(req, res) {
-    console.log("at profile:", req.user.id);
+    console.log("at profile:", req.user);
     res.render('profile.ejs', {
         user : req.user
     });

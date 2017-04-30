@@ -29,42 +29,29 @@
 
         <!-- LOCAL INFORMATION -->
         <!-- <div class="col-sm-6"> -->
-            <h3><span class="fa fa-user"></span> </h3>
+            <div class="well">
+                <h3><span class="fa fa-user"></span> </h3>
 
-<!--             <% if (user) { %>
-
-                <ul>
-                 <li><strong>First name</strong>: <%= user.first_name %></li>
-
-                 <li><strong>Last name</strong>: <%= user.last_name %></li>
-
-                 <li><strong>Username</strong>: <%= user.handle %></li>
-
-                 <li><strong>email</strong>: <%= user.email %></li>
-
-                 <br>
-                </ul>
-
-                <a href="/change_password" class="btn btn-default">Change Password</a>
-            <% } else %> -->
-            <% if (user_github) { %>
-
-                <ul>
-
-                 <li><strong>ID</strong>: <%= user_github.id %></li>
-
-                 <li><strong>Display Name</strong>: <%= user_github.display_name %></li>
-
-                 <li><strong>Username</strong>: <%= user_github.username %></li>
-
-                 <li><strong>Profile URL </strong>: <%= user_github.profileUrl %></li>
-
-                 <li><strong>Primary Email</strong>: <%= user_github.emails[0].value %></li>
-                 <br>
-                </ul>
-            <!-- <% } else { %> -->
-                <!-- <a href="/connect/local" class="btn btn-default">Connect Local</a> -->
-            <% } %>
+                <% if (!user.displayName) { %>
+                    <ul>
+                     <li><strong>First name</strong>: <%= user.first_name %></li>
+                     <li><strong>Last name</strong>: <%= user.last_name %></li>
+                     <li><strong>Username</strong>: <%= user.handle %></li>
+                     <li><strong>email</strong>: <%= user.email %></li>
+                     <br>
+                    </ul>
+                    <a href="/change_password" class="btn btn-default">Change Password</a>
+                <% } if (user.displayName) { %>
+                    <ul>
+                     <li><strong>ID</strong>: <%= user.id %></li>
+                     <li><strong>Username</strong>: <%= user.username %></li>
+                     <li><strong>Name</strong>: <%= user.displayName %></li>
+                     <li><strong>Email</strong>: <%= user.emails[0].value %></li>
+                     <li><strong>Github Profile</strong>: <a target="_blank" href=<%= user.profileUrl %>> <%= user.profileUrl %></a></li>
+                     <br>
+                    </ul>
+                <% }; %>
+            </div>
         <!-- </div> -->
     </div>
 </div>

@@ -9,6 +9,10 @@ const knex        = require("knex")(knexConfig[ENV]);
 const knexLogger  = require('knex-logger');
 const bcrypt      = require('bcrypt-nodejs')
 
+const GitHubStrategy = require('passport-github2').Strategy;
+const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
+const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+
 module.exports = function(passport) {
 
     // =========================================================================
@@ -171,9 +175,6 @@ module.exports = function(passport) {
         .catch((e)=>{ console.log(e) })
       }));
 
-    const GitHubStrategy = require('passport-github2').Strategy;
-    var GITHUB_CLIENT_ID = "e6f3d4fc327eeb66b8c8";
-    var GITHUB_CLIENT_SECRET = "0e9448477c027c87c79ecb961c644670b75fda30";
 
     passport.use(new GitHubStrategy({
         clientID: GITHUB_CLIENT_ID,
