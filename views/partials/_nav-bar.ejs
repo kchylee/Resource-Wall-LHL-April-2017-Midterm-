@@ -9,11 +9,23 @@
     </div>
     <ul class="nav navbar-nav navbar-right">
       <% if (user !== undefined) { %>
+      <li>
+        <a id="searchToggle" href="#">Search</a>
+        <form id="search" method="GET" action="/api/search">
+          <input id="query" type="text" name="query">
+          <input type="submit" value="Search">
+        </form>
+      </li>
+
+      <li><a href="/"><span class="resources"></span> My Resources </a></li>
       <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Your Profile</a></li>
       <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout </a></li>
+
+
       <% } else { %>
       <li><a href="/login" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-log-in"></span> Login </a></li>
       <% } %>
     </ul>
   </div>
 </nav>
+

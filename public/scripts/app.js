@@ -33,8 +33,19 @@ $(() => {
       method: "POST",
       url: "/api/like"
     }).done( () => {
-      $('button[name="resource_id"]').find('.fa-heart').css('color', 'red'); //NEEDS WORK; heart should be highlighted according to Like table
+      $('button[name="like"]').find('.fa-heart').css('color', 'red'); //NEEDS WORK; heart should be highlighted according to Like table
     })
+  }
+
+  const unLike = () => {
+    $.ajax({
+      method: "POST",
+      url: "/api/unlike"
+    }).done( () => {
+      $('button[name="like"]').find('.fa-heart').css('color', 'black');
+    })
+
+
   }
 
   const addComment = () => {
@@ -65,28 +76,39 @@ $(() => {
     searchRes($("#query").val());
   });
 
+  //Toggle search field
+  $('#searchToggle').on('click', () => {
+    event.preventDefault();
+    $('form #search').slideUp();
+  });
+
   //Like button
   $('button[name="like"]').on('click', () => {
     event.preventDefault();
-    addLike();
-  })
+    if($('button[name="like"]').find('.fa-heart').css('color') === 'red'){
+      unlike();
+    }else{
+      addLike();
+    }
+  });
+
 
   //Show comment box
   $('button[name="show_comment_field"]').on('click', () => {
     event.preventDefault();
     $('#add_comment').slideToggle();
-  })
+  });
 
   //Submit comment
   $('#add_comment').on('submit', (event) => {
     event.preventDefault();
     addComment();
-  })
+  });
   //Add rating
   $('button[name="star"]').on('click', (event) => {
     event.preventDefault();
     addRating($('button[name="star"]').val());
-  }
+  });
 
 
   //helpers

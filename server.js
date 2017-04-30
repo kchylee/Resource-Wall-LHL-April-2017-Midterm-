@@ -23,6 +23,7 @@ const catRoutes = require("./routes/categorize");
 const addCatItems = require("./routes/addToCategory");
 const getCat = require("./routes/getCategory");
 const addLikes = require("./routes/likes");
+const unlike = require("./routes/unlike");
 const addComment = require("./routes/addComment");
 const addRating = require("./routes/rating");
 // passport for user authentication
@@ -73,6 +74,7 @@ app.use("/api/search/", searchRoutes(knex));
 app.use("/api/like", addLikes(knex));
 app.use("/api/comment", addComment(knex));
 app.use("/api/rating", addRating(knex));
+app.use("/api/unlike", unlike(knex));
 
 // Home page
 app.get("/", (req, res) => {
