@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 
 // jquery document ready
 $(() => {
@@ -34,9 +34,31 @@ $(() => {
       method: "POST",
       url: "/api/like"
     }).done( () => {
-      $('#resource_id').find('.fa-heart').css('color', 'red'); //NEEDS WORK; heart should be highlighted according to Like table
+      $('button[name="resource_id"]').find('.fa-heart').css('color', 'red'); //NEEDS WORK; heart should be highlighted according to Like table
     })
   }
+
+  const addComment = () => {
+    $.ajax({
+      method: "POST",
+      url: "/api/comment",
+      data: $("#add_comment").serialize()
+    }).done( () => {
+      $('input[name="comment"]').trigger('reset');
+      $('#add_comment').slideUp();
+    })
+  }
+
+  const addRating = (rating) =>{
+    $.ajax({
+      method: "POST",
+      url: "/api/rating",
+      data: rating
+    }).done( (result) => {
+      $(`.star_rating button[name="star" value="${result}"] ~ button:before`).css('color', 'gold');
+    })
+  }
+
 
   //Searches database for resources
   $('#search').on('submit', () => {
@@ -44,14 +66,28 @@ $(() => {
     searchRes($("#query").val());
   });
 
-  $('#resource_id .fa-heart').on('click', () => {
+  //Like button
+  $('button[name="like"]').on('click', () => {
     event.preventDefault();
     addLike();
   })
 
+  //Show comment box
+  $('button[name="show_comment_field"]').on('click', () => {
+    event.preventDefault();
+    $('#add_comment').slideToggle();
+  })
 
-
-
+  //Submit comment
+  $('#add_comment').on('submit', (event) => {
+    event.preventDefault();
+    addComment();
+  })
+  //Add rating
+  $('button[name="star"]').on('click', (event) => {
+    event.preventDefault();
+    addRating($('button[name="star"]').val());
+  }
 
 
   //helpers
@@ -146,18 +182,6 @@ $(() => {
 
   });  // ends insertResourceForm.on
 
-
-
-  const addComment = (formData) => {
-    $.ajax({
-      method: "POST",
-      url: "/api/comments",
-      data: string,
-      success: function(userId, resId, text){
-        knex('comments').insert({user_id: userId, resource_id: resId, comment: text});
-      }
-    })
-  }
 
 // Ends jquery document ready.
 });

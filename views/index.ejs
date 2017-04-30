@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
     <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
     <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+    <link rel="stylesheet" href="/styles/rating.css" type="text/css" />
 
     <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
     <script type="text/javascript" src="/scripts/app.js"></script>
@@ -45,8 +46,30 @@
 
     <h1>Add likes</h1>
     <form action="/api/like" method="POST">
-      <i class="fa fa-heart" aria-hidden="true"></i>
+      <button name="like" type="submit" value="1">
+        <i class="fa fa-heart" aria-hidden="true"></i>
+      </button>
     </form>
+
+    <h1>Add comments</h1>
+    <button name="show_comment_field">
+        <i class="fa fa-comment" aria-hidden="true"></i>
+    </button>
+    <form id="add_comment" action="/api/comment" method="POST">
+        <input name="comment" type="textarea" value="" placeholder="Comments go here">
+        <input type="submit" value="Submit">
+    </form>
+
+
+    <h1>Add star rating</h1>
+    <form class="star_rating" method="POST" action="/api/rating">
+      <button name="star" value="5">☆</button>
+      <button name="star" value="4">☆</button>
+      <button name="star" value="3">☆</button>
+      <button name="star" value="2">☆</button>
+      <button name="star" value="1">☆</button>
+    </form>
+
 
   </body>
 </html>

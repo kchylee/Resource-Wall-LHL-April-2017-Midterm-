@@ -23,6 +23,8 @@ const catRoutes = require("./routes/categorize");
 const addCatItems = require("./routes/addToCategory");
 const getCat = require("./routes/getCategory");
 const addLikes = require("./routes/likes");
+const addComment = require("./routes/addComment");
+const addRating = require("./routes/rating");
 // passport for user authentication
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
@@ -67,11 +69,13 @@ app.use("/api/add_res", addCatItems(knex));
 app.use("/api/category", getCat(knex));
 app.use("/api/search/", searchRoutes(knex));
 app.use("/api/like", addLikes(knex));
+app.use("/api/comment", addComment(knex));
+app.use("/api/rating", addRating(knex));
 
 // Home page
-// app.get("/", (req, res) => {
-//   res.render("home");
-// });
+app.get("/", (req, res) => {
+  res.render("index");
+});
 
 // routes ======================================================================
 require('./routes/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
