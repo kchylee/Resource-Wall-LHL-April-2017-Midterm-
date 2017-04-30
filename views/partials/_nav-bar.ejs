@@ -3,12 +3,14 @@
     <div class="navbar-header">
     <% if (user !== undefined) { %>
       <a class="navbar-brand" href="#"><%= user.handle%></a>
+    <% if (user_github !== undefined) { %>
+      <a class="navbar-brand" href="#"><%= user_github.username %></a>
     <% } else { %>
       <a class="navbar-brand" href="#">Resource Wall</a>
     <% } %>
     </div>
     <ul class="nav navbar-nav navbar-right">
-      <% if (user !== undefined) { %>
+      <% if (user !== undefined || user_github !== undefined) { %>
       <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Your Profile</a></li>
       <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout </a></li>
       <% } else { %>

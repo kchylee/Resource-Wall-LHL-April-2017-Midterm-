@@ -29,29 +29,42 @@
 
         <!-- LOCAL INFORMATION -->
         <!-- <div class="col-sm-6"> -->
-            <div class="well">
-                <h3><span class="fa fa-user"></span> </h3>
+            <h3><span class="fa fa-user"></span> </h3>
 
-                <% if (user) { %>
+<!--             <% if (user) { %>
 
-                    <ul>
-                     <li><strong>First name</strong>: <%= user.first_name %></li>
+                <ul>
+                 <li><strong>First name</strong>: <%= user.first_name %></li>
 
-                     <li><strong>Last name</strong>: <%= user.last_name %></li>
+                 <li><strong>Last name</strong>: <%= user.last_name %></li>
 
-                     <li><strong>Username</strong>: <%= user.handle %></li>
+                 <li><strong>Username</strong>: <%= user.handle %></li>
 
-                     <li><strong>email</strong>: <%= user.email %></li>
+                 <li><strong>email</strong>: <%= user.email %></li>
 
-                     <br>
-                    </ul>
+                 <br>
+                </ul>
 
-                    <a href="/change_password" class="btn btn-default">Change Password</a>
-                <!-- <% } else { %> -->
-                    <!-- <a href="/connect/local" class="btn btn-default">Connect Local</a> -->
-                <% } %>
+                <a href="/change_password" class="btn btn-default">Change Password</a>
+            <% } else %> -->
+            <% if (user_github) { %>
 
-            </div>
+                <ul>
+
+                 <li><strong>ID</strong>: <%= user_github.id %></li>
+
+                 <li><strong>Display Name</strong>: <%= user_github.display_name %></li>
+
+                 <li><strong>Username</strong>: <%= user_github.username %></li>
+
+                 <li><strong>Profile URL </strong>: <%= user_github.profileUrl %></li>
+
+                 <li><strong>Primary Email</strong>: <%= user_github.emails[0].value %></li>
+                 <br>
+                </ul>
+            <!-- <% } else { %> -->
+                <!-- <a href="/connect/local" class="btn btn-default">Connect Local</a> -->
+            <% } %>
         <!-- </div> -->
     </div>
 </div>

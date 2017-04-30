@@ -9,6 +9,7 @@ const bodyParser  = require("body-parser");
 const methodOverride = require('method-override')
 const sass        = require("node-sass-middleware");
 const app         = express();
+const util = require('util');
 
 const knexConfig  = require("./knexfile");
 const knex        = require("knex")(knexConfig[ENV]);
@@ -27,6 +28,8 @@ const addLikes = require("./routes/likes");
 const passport = require('passport');
 const flash = require('connect-flash');
 const LocalStrategy = require('passport-local').Strategy;
+const GitHubStrategy = require('passport-github2').Strategy;
+const partials = require('express-partials');
 
 require('./auth/passport')(passport);
 
@@ -44,6 +47,8 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: false, save
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+app.use(methodOverride());
+app.use(partials());
 
 // Log knex SQL queries to STDOUT as well
 app.use(knexLogger(knex));
