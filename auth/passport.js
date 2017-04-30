@@ -18,16 +18,16 @@ module.exports = function(passport) {
     // passport needs ability to serialize and unserialize users out of session
 
     passport.serializeUser(function(user, cb) {
-      console.log("serializing")
-      console.log(user)
+      //console.log("serializing")
+      //console.log(user)
       cb(null, user.id);
     });
 
     passport.deserializeUser((id, done) => {
-      console.log("deserializing")
+      //console.log("deserializing")
       knex('users').where({id}).first()
       .then((user) => {
-        console.log(user);
+        //console.log(user);
         done(null, user); })
       .catch((err) => { done(err,null); });
     });
@@ -39,35 +39,24 @@ module.exports = function(passport) {
     const options = {
       usernameField: 'email',
       passwordField: 'password',
-      session: true
+      session: true,
+      passReqToCallback : true
     }
 
     passport.use('local-login', new LocalStrategy(options,
-      function(username, password, cb) {
-
-        // const express = require('express');
-        // const router  = express.Router();
-
+      function(req, username, password, cb) {
         console.log('username:',username, 'password:', password);
-        // router.post("/login",
-        //   (req, res) => {
         knex
         .select("*")
         .from("users")
         .where("email","=",username)
         .then((results) => {
-          if (console.log(results.length === 0)) {
-            console.log("login fail: username wrong")
-            return cb(null, false);
+          if (results.length === 0) {
+            return cb(null, false, req.flash('loginMessage', 'User not found.'));
           }
-          if (! bcrypt.compareSync(password, results[0].password) ) { //results[0].password !== password) {
-            console.log("results:", results)
-            console.log("results.password:", results.password, "password", password)
-            console.log("login fail: wrong password")
-
-            return cb(null, false);
+          if (! bcrypt.compareSync(password, results[0].password) ) {
+            return cb(null, false, req.flash('loginMessage', 'Password incorrect.'));
           }
-          console.log("login success")
           return cb(null, results[0]);
         })
         .catch((err) => cb(err));
@@ -91,9 +80,12 @@ module.exports = function(passport) {
         .where("email","=",req.body.email)
         .then((results) => {
           if (results.length !== 0) {
-            console.log("email already exist");
-            return done(null, false)
-            //res.redirect('/signup')
+            console.log("Email already exist");
+            return done(null, false, req.flash('signupMessage', 'Email is already taken.'));
+          }
+          else if (req.body.password !== req.body.password_retype) {
+            console.log("password does not match")
+            return done(null, false, req.flash('signupMessage', 'Entered passwords do not match.'))
           }
           else {
             knex("users")
@@ -103,23 +95,70 @@ module.exports = function(passport) {
                 "handle": req.body.handle,
                 "password": bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(8), null)}) //req.body.password})
             .then(() => {
-                console.log('Done insert');
                 let user_id = knex
-                            .select("*")
-                            .from("users")
-                            .where("email","=",req.body.email).then((results) => {
-                                let user = {
-                                    id: results[0].id,
-                                    local: {
-                                    password: results[0].password, //req.body.password,
-                                    email: req.body.email
-                                    }
-                                }
-                                console.log(user);
-                                return done(null, user);
-                                })
-          })
+                    .select("*")
+                    .from("users")
+                    .where("email","=",req.body.email)
+                    .then((results) => {
+                        let user = {
+                            id: results[0].id,
+                            local: {
+                            password: results[0].password,
+                            email: req.body.email
+                            }
+                        }
+                    console.log(user);
+                    return done(null, user);
+                    })
+                })
+            }
+        })
+        .catch((err) => done(err));
+    }))
+
+    // =========================================================================
+    // LOCAL PASSWORD CHANGE ===================================================
+    // =========================================================================
+
+    // const options = {
+    //   usernameField: 'email',
+    //   passwordField: 'password',
+    //   session: true,
+    //   passReqToCallback : true
+    // }
+
+    passport.use('local-change_password', new LocalStrategy(options,
+      function(req, username, password, cb) {
+        console.log('changing password', req.user);
+        let flag = false;
+        knex
+        .select("*")
+        .from("users")
+        .where("id","=",req.user.id)
+        .then((results) => {
+          console.log(results[0])
+          if (! bcrypt.compareSync(req.body.password, results[0].password) ) {
+            console.log('original password incorrect')
+            return cb(null, false, req.flash('changePasswordMessage', 'Original password incorrect.'));
+          }
+          else if (req.body.new_password !== req.body.confirm_password) {
+            console.log("password does not match");
+            return cb(null, false, req.flash('changePasswordMessage', 'Entered passwords do not match.'));
+          } else {
+            knex("users")
+            .where('id', req.user.id)
+            .update({"password": bcrypt.hashSync(req.body.new_password, bcrypt.genSaltSync(8), null)})
+            .then (() => {
+                knex
+                .select("*")
+                .from("users")
+                .where("id","=",req.user.id)
+                .then ((results) => {
+                    return cb(null, results[0]);
+                })
+            })
         }
-    });
-}))
+        })
+        .catch((e)=>{ console.log(e) })
+      }));
 }
