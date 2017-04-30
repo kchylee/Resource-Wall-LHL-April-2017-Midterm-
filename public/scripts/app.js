@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 // jquery document ready
 $(() => {
@@ -54,12 +53,13 @@ $(() => {
 
 
 
-  //helpers
-
+  //Coded by Carlos
+  //Helper functions
   const validateURL = (url) => {
     let res = new RegExp('(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})', 'i');
     return res.test(url);
   }
+  // Helpers end
 
   // Resource functions.
   const getUserResources = (userID) => {
@@ -68,7 +68,6 @@ $(() => {
       url: `/api/resources/json/${userID}`
     })
     .done( (data) => {
-      //console.log("DATA from getUserResources: ", data);
       $.each(data, (index, arrvalue) => {
         $temprow = $("<tr>").attr("data-id", arrvalue.id).appendTo($("#table-resources"));
         $.each(arrvalue, (key, objvalue) => {
@@ -81,7 +80,6 @@ $(() => {
       console.error(error);
     })
   };
-  getUserResources(1);
 
   const getResourceToUpdate = (id) => {
     $.ajax({
@@ -129,11 +127,27 @@ $(() => {
 
   };
 
+  const getAllResources = (userID) => {
+    $.ajax({
+      method: "GET",
+      url: "/api/resources/json"
+    })
+    .done( (data) => {
+      $.each(data, (index, arrvalue) => {
+        $temprow = $("<tr>").attr("data-id", arrvalue.id).appendTo($("#table-resources"));
+        $.each(arrvalue, (key, objvalue) => {
+          //$("<td>").text(objvalue).appendTo($temprow);
+          console.log(objvalue);
+        })
+      });
+    })
+    .fail( (error) => {
+      console.error(error);
+    })
+  };
+
   // Insert resource. Catches the event from a form and inserts data in the DB
-
-  const $insertResourceForm = $('#insert-resource');
-  $insertResourceForm.on('submit', (event) => {
-
+  $('#insert-resource').on('submit', (event) => {
     event.preventDefault();
     //validate content here: URL, title and description.
     if (( validateURL($('#insert-resource')[0].elements.url.value) === false ) || ( $('#insert-resource')[0].elements.title.value === "" )) {
@@ -142,10 +156,35 @@ $(() => {
       //All good after validation? then invoke the insertion, pass the form data.
       insertResource($('#insert-resource').serialize());
     }
-
-
   });  // ends insertResourceForm.on
 
+  // gets all details of a single resource and updates the modal window.
+  const getResourceDeetsForModal = (id) => {
+    $.ajax({
+      method: "GET",
+      url: `/api/resources/${id}`
+    })
+    .done( (data) => {
+      var modal = $('#resourceModal');
+      modal.find('.modal-title').text(data[0].title)
+      modal.find('.modal-body h5').text(data[0].url)
+      modal.find('.modal-body h6').text(data[0].description)
+    })
+    .fail( (error) => {
+      console.error(error);
+    })
+  };
+
+  // Handles the modal displaying the details about the resource.
+  $('#resourceModal').on('show.bs.modal', function (event) {
+    let divResource = $(event.relatedTarget) // Button that triggered the modal
+    let resourceID = divResource.data('id') // Extract info from data-* attributes
+    // with the ID I can get the data from the db.
+    // call the function that makes the ajax call to the route in the api. The function will update the modal elements.
+    getResourceDeetsForModal(resourceID);
+  })
+
+  // End resources functions
 
 
   const addComment = (formData) => {

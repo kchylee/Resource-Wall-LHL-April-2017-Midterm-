@@ -53,7 +53,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/styles", sass({
   src: __dirname + "/styles",
   dest: __dirname + "/public/styles",
-  debug: false,
+  debug: true,
   outputStyle: 'expanded'
 }));
 
@@ -68,10 +68,11 @@ app.use("/api/category", getCat(knex));
 app.use("/api/search/", searchRoutes(knex));
 app.use("/api/like", addLikes(knex));
 
-// Home page
-// app.get("/", (req, res) => {
-//   res.render("home");
-// });
+
+app.get("/", (req, res) => {
+   res.render("userhome");
+});
+
 
 // routes ======================================================================
 require('./routes/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport

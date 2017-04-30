@@ -1,9 +1,9 @@
 module.exports = function(app, passport) {
 
 // Home Page
-app.get("/", (req, res) => {
+app.get("/home", (req, res) => {
   console.log("request at Root:",req.user);
-  res.render("index", { user: req.user });
+  res.render("home", { user: req.user });
 });
 
 // LOGIN ===============================
