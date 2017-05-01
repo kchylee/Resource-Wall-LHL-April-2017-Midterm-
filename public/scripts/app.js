@@ -12,36 +12,8 @@ $(() => {
     }
   });
 
-  //Gets star ratings
-
-  // const showRating = () => {
-  //     $.ajax({
-  //     method: "GET",
-  //     url: "/api/show_rating"
-  //   }).done( (rated) => {
-  //     for (rate of rated){
-  //       $(`.star_rating .star value="${rate.resource_id}"] ~ button:before`).css('color', 'gold');
-  //     }
-  //   })
-  // }
-
-  //Make all liked buttons red when document ready
-  // const showLiked = (userID) => {
-  //     $.ajax({
-  //     method: "GET",
-  //     url: "/api/showLiked",
-  //     data: userID
-  //   }).done( (liked) => {
-  //     $('.like').css('color', 'black');
-  //     console.log('resourceID from showLiked: ' + liked);
-  //     for (like of liked){
-  //       $(`.${like.resource_id} .like`).css("color", "red");
-  //     }
-  //   })
-  // }
-
-  // showLiked($('input[name="userID"]').val());
-
+  //Searches database by matching queries with resource titles and description
+  //and then appends search result to body
   const searchRes = (searchFormData) => {
     console.log(searchFormData);
     $.ajax({
@@ -58,6 +30,8 @@ $(() => {
       })
   }
 
+  //Sends an ajax POST request to write to likes table in the database
+  //and then sets the Font Awesome color to red
   const addLike = () => {
     $.ajax({
       method: "POST",
@@ -69,10 +43,11 @@ $(() => {
     }).done( (result) => {
       console.log(result);
       $('.resourceID').siblings('.fa-heart').css('color', 'red');
-       // showLiked(result[0].userID);
     })
   }
 
+  //Sends an ajax POST request to delete from likes table in the database
+  //and then executes showLiked() to update the colour of hearts
   const unLike = () => {
     $.ajax({
       method: "POST",
@@ -82,6 +57,9 @@ $(() => {
     })
   }
 
+  //Sends an ajax POST request to write to comments table in the database
+  //and then resets and hides input field
+  //followed by appending comments to modal window
   const addComment = () => {
     $.ajax({
       method: "POST",
@@ -94,6 +72,8 @@ $(() => {
     })
   }
 
+  //Sends an ajax POST request to write to ratings table
+  //and then highlights stars
   const addRating = (rating) =>{
     $.ajax({
       method: "POST",
@@ -103,7 +83,7 @@ $(() => {
         resourceID: $('.resourceID').val(),
         rating: $('.star_rating').val()
       }
-    }).done( () => {
+    }).done( (result) => {
       $(`.star_rating .star value="${result[0].rating}"] ~ button:before`).css('color', 'gold');
     })
   }

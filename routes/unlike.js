@@ -9,8 +9,8 @@ module.exports = (knex) => {
     console.log("inside unlike")
     knex('likes')
     .where({
-      user_id: 2, //Need to get from req.session
-      resource_id: 1//Need to get from req.body
+      user_id: 2,
+      resource_id: 1
     })
     .del()
     .then( () => {
