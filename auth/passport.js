@@ -22,26 +22,24 @@ module.exports = function(passport) {
     // passport needs ability to serialize and unserialize users out of session
 
     passport.serializeUser(function(user, cb) {
-      //console.log("serializing")
-      //console.log(user)
       cb(null, user.id);
     });
 
+    // Below is a potentially terrible way to deserialize
+    // seperately for local-authentication and github
+    // authentication. Should try to combine two deserialize
+    // functions.
+
+    // deserialize for local
     passport.deserializeUser((id, done) => {
-      console.log("deserializing:", id)
       knex('users').where({id}).first()
       .then((user) => {
-        //console.log(user);
         done(null, user); })
       .catch((err) => { done(err,null); });
     });
 
-    // passport.serializeUser(function(user, done) {
-    //   done(null, user);
-    // });
-
+    // deserialize for github
     passport.deserializeUser(function(obj, done) {
-        console.log("github: deserializing:", obj)
         done(null, obj);
     });
 
@@ -58,7 +56,6 @@ module.exports = function(passport) {
 
     passport.use('local-login', new LocalStrategy(options,
       function(req, username, password, cb) {
-        console.log('username:',username, 'password:', password);
         knex
         .select("*")
         .from("users")
@@ -86,18 +83,15 @@ module.exports = function(passport) {
         passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
     },
     function(req, username, password, done) {
-        console.log('signing up')
         knex
         .select("*")
         .from("users")
         .where("email","=",req.body.email)
         .then((results) => {
           if (results.length !== 0) {
-            console.log("Email already exist");
             return done(null, false, req.flash('signupMessage', 'Email is already taken.'));
           }
           else if (req.body.password !== req.body.password_retype) {
-            console.log("password does not match")
             return done(null, false, req.flash('signupMessage', 'Entered passwords do not match.'))
           }
           else {
@@ -120,7 +114,6 @@ module.exports = function(passport) {
                             email: req.body.email
                             }
                         }
-                    console.log(user);
                     return done(null, user);
                     })
                 })
@@ -133,29 +126,18 @@ module.exports = function(passport) {
     // LOCAL PASSWORD CHANGE ===================================================
     // =========================================================================
 
-    // const options = {
-    //   usernameField: 'email',
-    //   passwordField: 'password',
-    //   session: true,
-    //   passReqToCallback : true
-    // }
-
     passport.use('local-change_password', new LocalStrategy(options,
       function(req, username, password, cb) {
-        console.log('changing password', req.user);
         let flag = false;
         knex
         .select("*")
         .from("users")
         .where("id","=",req.user.id)
         .then((results) => {
-          console.log(results[0])
           if (! bcrypt.compareSync(req.body.password, results[0].password) ) {
-            console.log('original password incorrect')
             return cb(null, false, req.flash('changePasswordMessage', 'Original password incorrect.'));
           }
           else if (req.body.new_password !== req.body.confirm_password) {
-            console.log("password does not match");
             return cb(null, false, req.flash('changePasswordMessage', 'Entered passwords do not match.'));
           } else {
             knex("users")
@@ -183,7 +165,6 @@ module.exports = function(passport) {
       },
       function(accessToken, refreshToken, profile, done) {
         // asynchronous verification, for effect...
-        console.log(profile)
         process.nextTick(function () {
           // To keep the example simple, the user's GitHub profile is returned to
           // represent the logged-in user.  In a typical application, you would want
@@ -196,7 +177,6 @@ module.exports = function(passport) {
           .where("email","=",profile.emails[0].value)
           .then((results, err) => {
             if (results.length !== 0) {
-              console.log("Email found");
               return done(null,results[0]);
             } else {
               const nameArr = profile.displayName.split(" ");
@@ -205,7 +185,7 @@ module.exports = function(passport) {
                 "last_name": nameArr[nameArr.length-1],
                 "email": profile.emails[0].value,
                 "handle": profile.username,
-                "password": null }) //req.body.password})
+                "password": null })
               .then(() => {
                 let user_id = knex
                     .select("*")
@@ -218,7 +198,6 @@ module.exports = function(passport) {
                             email: profile.emails[0].value
                             }
                         }
-                    console.log(user);
                     return done(null, user);
                     })
                 })
@@ -227,6 +206,4 @@ module.exports = function(passport) {
           .catch((err) => done(err));
           })
         }));
-          //return done(null, profile);
-
 }

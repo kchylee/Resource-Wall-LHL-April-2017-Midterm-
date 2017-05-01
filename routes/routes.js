@@ -9,20 +9,12 @@ module.exports = function(app, passport) {
 
 // Home Page
 app.get("/home", isLoggedIn, (req, res) => {
-  console.log("request at Root:",req.user);
   res.render("home", { user: req.user });
 });
-
-// app.get("/index", (req, res) => {
-
-//   res.render("index");
-// });
 
 // LOGIN ===============================
 // show the login form
 app.get('/login', (req, res) => {
-    console.log("request at login:",req.session);
-    console.log('get login');
     res.render("login", { message: req.flash('loginMessage') });
   });
 
@@ -55,13 +47,11 @@ app.get('/login', (req, res) => {
   app.get('/auth/github/callback',
     passport.authenticate('github', { failureRedirect: '/login' }),
     function(req, res) {
-      console.log('authenticate:', req.user)
       res.render('profile.ejs', { user: req.user });
     });
 
   // PROFILE SECTION =========================
   app.get('/profile', isLoggedIn, function(req, res) {
-    console.log("at profile:", req.user);
     res.render('profile.ejs', {
         user : req.user
     });
@@ -69,7 +59,6 @@ app.get('/login', (req, res) => {
 
   // CHANGE PASSWORD =========================
   app.get('/change_password', isLoggedIn, function(req, res) {
-      console.log("at change_password:", req.user.id);
       res.render('change_password.ejs', {
           message: req.flash('changePasswordMessage'),
           user: req.user
@@ -84,9 +73,7 @@ app.get('/login', (req, res) => {
 
   // LOGOUT ==============================
   app.get('/logout', isLoggedIn, function(req, res) {
-      console.log("before logout:", req.session)
       req.logout();
-      console.log("after logout:",req.session);
       res.redirect('/');
   });
 
@@ -94,8 +81,6 @@ app.get('/login', (req, res) => {
   // // // show the signup form
   app.get('/signup',
     (req, res) => {
-      console.log("request at signup:",req.session);
-      console.log('sign up');
       res.render("signup", { message: req.flash('signupMessage') });
   });
 
@@ -105,7 +90,6 @@ app.get('/login', (req, res) => {
       failureRedirect : '/signup', // redirect back to the signup page if there is an error
       failureFlash : true // allow flash messages
   }));
-
 };
 
 // route middleware to ensure user is logged in
