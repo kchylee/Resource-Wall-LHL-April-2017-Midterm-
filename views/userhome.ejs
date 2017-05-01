@@ -9,7 +9,7 @@
     <title>Resource Wall -- Home</title>
 
     <!-- Bootstrap -->
-    <link href="vendor/bootstrap-3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
     <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
     <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
@@ -19,36 +19,19 @@
   </head>
   <body>
   <%- include("partials/_navigation"); %>
-<input id="resourcesearchinput" />
+
   <!-- this container will hold the data from all users -->
   <div id="resource-container" class="container">
 
   </div> <!-- /container -->
 
 
-<!--  -->
-<div class="modal fade" id="resourceModal" tabindex="-1" role="dialog" aria-labelledby="resourceModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="resourceModalLabel">Title Here</h4>
+  <!-- Partials with the modal divs for updating, viewing details and inserting resources. -->
+  <%- include("partials/_modal_new_resource"); %>
+  <%- include("partials/_modal_update_resource"); %>
+  <%- include("partials/_modal_detail_resource"); %>
 
-      </div>
-      <div class="modal-body">
-        <h5>url here</h5>
-        <h6>Description here</h6>
-        <form action="/api/comments/?_method=PUT" method="POST">
-          <div class="form-group">
-            <label for="comments-text" class="control-label">Add a comment:</label>
-            <textarea class="form-control" id="comments-text"></textarea>
-          </div>
-        </form>
-      </div>
 
-    </div>
-  </div>
-</div>
   <%- include("partials/_bootstrap_core_js"); %>
   <script type="text/javascript" src="/scripts/app.js"></script>
   </body>

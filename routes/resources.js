@@ -90,7 +90,7 @@ module.exports = (knex) => {
     })
   });
 
-  // get all resources. We will get rid of this later.
+  // get all resources.
   router.get("/", (req, res) => {
     knex
       .select("*")

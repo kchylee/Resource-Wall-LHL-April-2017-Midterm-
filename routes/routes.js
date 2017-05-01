@@ -28,7 +28,7 @@ app.get('/login', (req, res) => {
 
   // process the login form
   app.post('/login', passport.authenticate('local-login', {
-    successRedirect : '/profile', // redirect to the secure profile section
+    successRedirect : '/userhome', // redirect to the secure profile section
     failureRedirect : '/login', // redirect back to the signup page if there is an error
     failureFlash : true // allow flash messages
   }));
@@ -71,7 +71,8 @@ app.get('/login', (req, res) => {
   app.get('/change_password', isLoggedIn, function(req, res) {
       console.log("at change_password:", req.user.id);
       res.render('change_password.ejs', {
-          message: req.flash('changePasswordMessage')
+          message: req.flash('changePasswordMessage'),
+          user: req.user
       });
     });
 

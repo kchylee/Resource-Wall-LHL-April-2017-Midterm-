@@ -161,11 +161,11 @@ $(() => {
       url: `/api/resources/${id}`
     })
     .done( (data) => {
-      $("#update-form-title").val(data[0].title);
-      $("#update-form-url").val(data[0].url);
-      $("#update-form-description").val(data[0].description);
-      $("#update-form-created_by").val(data[0].created_by);
-      $("#update-form-resourceID").val(data[0].id);
+      var modal = $('#update-resource-modal');
+      modal.find('#title').value(data[0].title)
+      modal.find('#url').value(data[0].url)
+      modal.find('#description').value(data[0].description)
+
     })
     .fail( (error) => {
       console.error(error);
@@ -201,7 +201,7 @@ $(() => {
 
   };
 
-  const getAllResources = (userID) => {
+  const getAllResources = () => {
     $.ajax({
       method: "GET",
       url: "/api/resources"
@@ -220,7 +220,7 @@ $(() => {
             break;
           }
           $resourcecol = $("<div>").addClass("col-xs-2 col-md-3").appendTo($resourcerow);
-          $resourcedata = $("<div>").attr("id", "resourcedata").appendTo($resourcecol);
+          $resourcedata = $("<div>").addClass("resourcedata").appendTo($resourcecol);
 
           $resource = $("<div>").addClass("resource")
                       .attr({
@@ -244,7 +244,7 @@ $(() => {
       console.error(error);
     })
   };
-  getAllResources(1);
+  getAllResources();
 
   // Insert resource. Catches the event from a form and inserts data in the DB
   $('#insert-resource').on('submit', (event) => {
@@ -269,6 +269,7 @@ $(() => {
       modal.find('.modal-title').text(data[0].title)
       modal.find('.modal-body h5').text(data[0].url)
       modal.find('.modal-body h6').text(data[0].description)
+      modal.find('#resourceID').val(data[0].id)
     })
     .fail( (error) => {
       console.error(error);
@@ -282,7 +283,22 @@ $(() => {
     // with the ID I can get the data from the db.
     // call the function that makes the ajax call to the route in the api. The function will update the modal elements.
     getResourceDeetsForModal(resourceID);
+  });
+
+  // Handles the modal that inserts a new resource.
+  $('#new-resource-modal').on('show.bs.modal', function (event) {
+    // call the function that makes the ajax call to the route in the api. The function will update the modal elements.
+    insertResource();
+  });
+
+  // Handles the modal that updates a new resource.
+  $('#new-resource-modal').on('show.bs.modal', function (event) {
+    let divResource = $(event.relatedTarget) // Button that triggered the modal
+    let resourceID = divResource.data('id') // Extract info from data-* attributes
+    // call the function that makes the ajax call to the route in the api. The function will update the modal elements.
+    getResourceToUpdate(resourceID);
   })
+
 
   // End resources functions
 

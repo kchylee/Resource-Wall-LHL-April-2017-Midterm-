@@ -82,7 +82,11 @@ app.use("/api/rating", addRating(knex));
 app.use("/api/unlike", unlike(knex));
 
 app.get("/", (req, res) => {
-   res.render("userhome");
+   res.render("home", { user: req.user });
+});
+
+app.get("/userhome", (req, res) => {
+   res.render("userhome", { user: req.user });
 });
 
 // routes ======================================================================
