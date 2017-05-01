@@ -85,11 +85,18 @@ app.use("/api/show_rating", getRating(knex));
 app.use("/api/unlike", unlike(knex));
 app.use("/api/showLiked", showLiked(knex));
 
+// route middleware to ensure user is logged in
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated())
+        return next();
+    res.redirect('/');
+}
+
 app.get("/", (req, res) => {
    res.render("home", { user: req.user });
 });
 
-app.get("/userhome", (req, res) => {
+app.get("/userhome", isLoggedIn, (req, res) => {
    res.render("userhome", { user: req.user });
 });
 
