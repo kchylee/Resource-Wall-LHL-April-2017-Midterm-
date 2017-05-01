@@ -10,12 +10,24 @@
       <div class="modal-body">
         <h5>url here</h5>
         <h6>Description here</h6>
-        <form action="/api/comments/?_method=PUT" method="POST">
-          <div class="form-group">
-            <label for="comments-text" class="control-label">Add a comment:</label>
-            <textarea class="form-control" id="comments-text"></textarea>
-            <input type="hidden" value="" name="resourceID" id="resourceID">
-          </div>
+        <form class="star_rating" method="POST" action="/api/rating">
+          <button name="star" class="star" type=submit value="5">☆</button>
+          <button name="star" class="star" type=submit value="4">☆</button>
+          <button name="star" class="star" type=submit value="3">☆</button>
+          <button name="star" class="star" type=submit value="2">☆</button>
+          <button name="star" class="star" type=submit value="1">☆</button>
+        </form>
+        <!--Like/Unlike-->
+        <button class="like" type="submit">
+          <i class="fa fa-heart" aria-hidden="true"></i>
+        </button>
+        <!--Add Comment-->
+        <button class="show_comment_field">
+            <i class="fa fa-comment" aria-hidden="true"></i>
+        </button>
+        <form id="add_comment" action="/api/comment" method="POST">
+            <input name="comment" type="textarea" value="">
+            <input type="submit" value="Comment">
         </form>
       </div>
 
