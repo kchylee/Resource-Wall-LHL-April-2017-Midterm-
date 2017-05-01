@@ -41,6 +41,19 @@
               </div>
 
               <div class="well">
+                  <% if (user.password !== null) { %>
+<!-- <<<<<<< HEAD
+                      <ul>
+                       <li><strong>First name</strong>: <%= user.first_name %></li>
+                       <li><strong>Last name</strong>: <%= user.last_name %></li>
+                       <li><strong>Username</strong>: <%= user.handle %></li>
+                       <li><strong>email</strong>: <%= user.email %></li>
+                       <br>
+                      </ul>
+                      <% if (user.password !== null) { %>
+                        <a href="/change_password" class="btn btn-default">Change Password</a>
+                      <% } %>
+======= -->
                     <form action="/api/users/update/" method="POST">
                       <div class="form-group">
                       <label class="control-label" for="first_name">First Name:</label>
@@ -62,6 +75,19 @@
                         <button class="btn btn-warning btn-block" type="Submit">Update Profile</button>
                       </div>
                     </form>
+
+
+
+<!-- >>>>>>> f7fca8cdb422d255893b2647b873d8104306ac7c -->
+                  <% } if (user.password === null) { %>
+                      <ul>
+                       <li><strong>First name</strong>: <%= user.first_name %></li>
+                       <li><strong>Last name</strong>: <%= user.last_name %></li>
+                       <li><strong>Username</strong>: <%= user.handle %></li>
+                       <li><strong>email</strong>: <%= user.email %></li>
+                       <br>
+                      </ul>
+                  <% }; %>
               </div>
           <!-- </div> -->
       </div>
