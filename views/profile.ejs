@@ -32,14 +32,28 @@
                   <div class="col-sm-6 col-md-6">
                     <h3><span class="fa fa-user"></span> User Profile </h3>
                   </div>
+                  <% if (user.password !== null) { %>
                   <div class="col-sm-6 col-md-6">
                     <a href="/change_password" class="btn btn-primary pull-right">Change Password</a>
                   </div>
+                  <% } %>
                 </div>
               </div>
 
               <div class="well">
-                  <% if (!user.displayName) { %>
+                  <% if (user.password !== null) { %>
+<!-- <<<<<<< HEAD
+                      <ul>
+                       <li><strong>First name</strong>: <%= user.first_name %></li>
+                       <li><strong>Last name</strong>: <%= user.last_name %></li>
+                       <li><strong>Username</strong>: <%= user.handle %></li>
+                       <li><strong>email</strong>: <%= user.email %></li>
+                       <br>
+                      </ul>
+                      <% if (user.password !== null) { %>
+                        <a href="/change_password" class="btn btn-default">Change Password</a>
+                      <% } %>
+======= -->
                     <form action="/api/users/update/" method="POST">
                       <div class="form-group">
                       <label class="control-label" for="first_name">First Name:</label>
@@ -64,13 +78,13 @@
 
 
 
-                  <% } if (user.displayName) { %>
+<!-- >>>>>>> f7fca8cdb422d255893b2647b873d8104306ac7c -->
+                  <% } if (user.password === null) { %>
                       <ul>
-                       <li><strong>ID</strong>: <%= user.id %></li>
-                       <li><strong>Username</strong>: <%= user.username %></li>
-                       <li><strong>Name</strong>: <%= user.displayName %></li>
-                       <li><strong>Email</strong>: <%= user.emails[0].value %></li>
-                       <li><strong>Github Profile</strong>: <a target="_blank" href=<%= user.profileUrl %>> <%= user.profileUrl %></a></li>
+                       <li><strong>First name</strong>: <%= user.first_name %></li>
+                       <li><strong>Last name</strong>: <%= user.last_name %></li>
+                       <li><strong>Username</strong>: <%= user.handle %></li>
+                       <li><strong>email</strong>: <%= user.email %></li>
                        <br>
                       </ul>
                   <% }; %>

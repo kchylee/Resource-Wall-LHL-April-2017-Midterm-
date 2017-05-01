@@ -12,7 +12,6 @@ module.exports = (knex) => {
         knex
         .raw(`select * from resources where UPPER(title) like any (array[UPPER('%${qArr}%')]) or UPPER(description) like any (array[UPPER('%${qArr}%')])`)
         .then( (results) => {
-          console.log(results);
           res.json(results);
         });
     };
