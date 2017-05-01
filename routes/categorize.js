@@ -8,10 +8,9 @@ module.exports = (knex) => {
         knex('category')
         .insert({
           cat_name: req.body.catname,
-          user_id: 1      //Dummy ID
+          user_id: 1
         })
         .then((result) => {
-          console.log(result);
         });
         res.redirect("/");
   });
