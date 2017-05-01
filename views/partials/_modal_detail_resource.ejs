@@ -16,21 +16,38 @@
           <button name="star" class="star" type=submit value="3">☆</button>
           <button name="star" class="star" type=submit value="2">☆</button>
           <button name="star" class="star" type=submit value="1">☆</button>
+          <input type="hidden" value="" name="resourceID" class="resourceID">
+          <input type="hidden" name="userID" value="<%= user.id %>">
         </form>
         <!--Like/Unlike-->
-        <button class="like" type="submit">
-          <i class="fa fa-heart" aria-hidden="true"></i>
-        </button>
+        <form action="/api/like" method="POST" class="like">
+          <button type="submit">
+            <i class="fa fa-heart" aria-hidden="true"></i>
+            <input type="hidden" value="" name="resourceID" class="resourceID">
+            <input type="hidden" name="userID" value="<%= user.id %>">
+          </button>
+        </form>
         <!--Add Comment-->
         <button class="show_comment_field">
-            <i class="fa fa-comment" aria-hidden="true"></i>
+          <i class="fa fa-comment" aria-hidden="true"></i>
         </button>
         <form id="add_comment" action="/api/comment" method="POST">
-            <input name="comment" type="textarea" value="">
-            <input type="submit" value="Comment">
+          <input name="comment" type="textarea" value="">
+          <input type="submit" value="Comment">
+          <input type="hidden" value="" name="resourceID" class="resourceID">
+          <input type="hidden" name="userID" value="<%= user.id %>">
+        </form>
+        <!--Add to Category-->
+        <form action="/api/add_res" method="POST">
+          <h6>Add to Category</h6>
+          <select name="cat_id">
+            <option></option>
+          </select>
+          <input type="submit" value="Add">
+          <input type="hidden" value="" name="resourceID" class="resourceID">
+          <input type="hidden" name="userID" value="<%= user.id %>">
         </form>
       </div>
-
     </div>
   </div>
 </div>

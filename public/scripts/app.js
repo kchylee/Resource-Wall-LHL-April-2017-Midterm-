@@ -12,20 +12,35 @@ $(() => {
     }
   });
 
-  //Make all liked buttons red when document ready
-  const showLiked = () => {
-      $.ajax({
-      method: "GET",
-      url: "/api/showLiked"
-    }).done( (liked) => {
-      $('.like').css('color', 'black');
-      for (like of liked){
-        $(`${like.resource_id} .like`).css("color", "red");
-      }
-    })
-  }
+  //Gets star ratings
 
-  showLiked();
+  // const showRating = () => {
+  //     $.ajax({
+  //     method: "GET",
+  //     url: "/api/show_rating"
+  //   }).done( (rated) => {
+  //     for (rate of rated){
+  //       $(`.star_rating .star value="${rate.resource_id}"] ~ button:before`).css('color', 'gold');
+  //     }
+  //   })
+  // }
+
+  //Make all liked buttons red when document ready
+  // const showLiked = (userID) => {
+  //     $.ajax({
+  //     method: "GET",
+  //     url: "/api/showLiked",
+  //     data: userID
+  //   }).done( (liked) => {
+  //     $('.like').css('color', 'black');
+  //     console.log('resourceID from showLiked: ' + liked);
+  //     for (like of liked){
+  //       $(`.${like.resource_id} .like`).css("color", "red");
+  //     }
+  //   })
+  // }
+
+  // showLiked($('input[name="userID"]').val());
 
   const searchRes = (searchFormData) => {
     console.log(searchFormData);
@@ -46,9 +61,15 @@ $(() => {
   const addLike = () => {
     $.ajax({
       method: "POST",
-      url: "/api/like"
-    }).done( () => {
-       showLiked();
+      url: "/api/like",
+      data: {
+        userID: $('input[name="userID"]').val(),
+        resourceID: $('.resourceID').val()
+      }
+    }).done( (result) => {
+      console.log(result);
+      $('.resourceID').siblings('.fa-heart').css('color', 'red');
+       // showLiked(result[0].userID);
     })
   }
 
@@ -66,18 +87,23 @@ $(() => {
       method: "POST",
       url: "/api/comment",
       data: $("#add_comment").serialize()
-    }).done( () => {
+    }).done( (result) => {
       $('input[name="comment"]').trigger('reset');
       $('#add_comment').slideUp();
+      $('<div>').text(result.rows[0].comment).appendTo($('.modal-body'));
     })
   }
 
-  const addRating = () =>{
+  const addRating = (rating) =>{
     $.ajax({
       method: "POST",
-      url: "/api/rating"
-    }).done( (result) => {
-      console.log('add rating result: ' + result);
+      url: "/api/rating",
+      data: {
+        userID: $('input[name="userID"]').val(),
+        resourceID: $('.resourceID').val(),
+        rating: $('.star_rating').val()
+      }
+    }).done( () => {
       $(`.star_rating .star value="${result[0].rating}"] ~ button:before`).css('color', 'gold');
     })
   }
@@ -95,13 +121,9 @@ $(() => {
   });
 
   //Like button
-  $('.like').on('click', () => {
+  $('.like').on('submit', (event) => {
     event.preventDefault();
-    if($('.like').css('color') === 'red'){
-      unLike();
-    }else{
       addLike();
-    }
   });
 
   //Show comment box
@@ -115,10 +137,11 @@ $(() => {
     event.preventDefault();
     addComment();
   });
+
   //Add rating
-  $('.star_rating .star').on('submit', (event) => {
+  $('.star_rating').on('submit', (rating) => {
     event.preventDefault();
-    addRating();
+    addRating(rating);
   });
 
   //Coded by Carlos
@@ -279,7 +302,7 @@ $(() => {
       modal.find('.modal-title').text(data[0].title)
       modal.find('.modal-body h5').text(data[0].url)
       modal.find('.modal-body h6').text(data[0].description)
-      modal.find('#resourceID').val(data[0].id)
+      modal.find('.resourceID').val(data[0].id)
     })
     .fail( (error) => {
       console.error(error);

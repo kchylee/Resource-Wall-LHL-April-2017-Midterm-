@@ -79,6 +79,11 @@ body {
 button {
   border: none;
   background-color: transparent;
+  shadow: none;
+}
+
+button:focus {
+  outline: none;
 }
 
 

@@ -10,9 +10,9 @@ module.exports = (knex) => {
     knex('ratings')
     .returning("*")
     .insert({
-      user_id: 2, //Need to get from req.session
-      resource_id: 1,//Need to get from req.body
-      rating: req.body.star
+      user_id: req.body.userID, //Need to get from req.session
+      resource_id: req.body.resourceID,//Need to get from req.body
+      rating: req.body.rating
     })
     .then( (result) => {
       res.json(result);

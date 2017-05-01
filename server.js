@@ -28,6 +28,7 @@ const unlike = require("./routes/unlike");
 const showLiked = require("./routes/showLiked");
 const addComment = require("./routes/addComment");
 const addRating = require("./routes/rating");
+const getRating = require("./routes/show_rating");
 // passport for user authentication
 const passport = require('passport');
 const flash = require('connect-flash');
@@ -80,8 +81,10 @@ app.use("/api/search/", searchRoutes(knex));
 app.use("/api/like", addLikes(knex));
 app.use("/api/comment", addComment(knex));
 app.use("/api/rating", addRating(knex));
+app.use("/api/show_rating", getRating(knex));
 app.use("/api/unlike", unlike(knex));
 app.use("/api/showLiked", showLiked(knex));
+
 app.get("/", (req, res) => {
    res.render("home", { user: req.user });
 });
