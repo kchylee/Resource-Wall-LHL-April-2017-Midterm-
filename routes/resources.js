@@ -93,8 +93,9 @@ module.exports = (knex) => {
   // get all resources.
   router.get("/", (req, res) => {
     knex
-      .select("*")
+      .select("resources.*", "users.handle")
       .from(tableResources)
+      .innerJoin('users', 'users.id', 'resources.created_by')
       .then( (results) => {
         res.status(200).json(results);
       }, (rej) => {

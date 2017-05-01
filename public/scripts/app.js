@@ -233,8 +233,8 @@ $(() => {
           $resource.append($("<div>").addClass("title").text(data[arrIndex].title));
           $resource.append($("<div>").addClass("url").text(data[arrIndex].url));
           $resource.append($("<div>").addClass("description").text(data[arrIndex].description));
-          $resource.append($("<div>").addClass("handle").text(data[arrIndex].created_by));
-          $resource.append($("<div>").addClass("stats").text("Loved by:"));
+          $resource.append($("<div>").addClass("handle").text('by @' + data[arrIndex].handle));
+          //$resource.append($("<div>").addClass("stats").text("Loved by:"));
           arrIndex += 1
         }
         $("#resource-container").append($resourcerow);
