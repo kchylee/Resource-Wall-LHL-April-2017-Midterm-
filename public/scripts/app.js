@@ -12,20 +12,35 @@ $(() => {
     }
   });
 
-  //Make all liked buttons red when document ready
-  const showLiked = () => {
-      $.ajax({
-      method: "GET",
-      url: "/api/showLiked"
-    }).done( (liked) => {
-      $('.like').css('color', 'black');
-      for (like of liked){
-        $(`${like.resource_id} .like`).css("color", "red");
-      }
-    })
-  }
+  //Gets star ratings
 
-  showLiked();
+  // const showRating = () => {
+  //     $.ajax({
+  //     method: "GET",
+  //     url: "/api/show_rating"
+  //   }).done( (rated) => {
+  //     for (rate of rated){
+  //       $(`.star_rating .star value="${rate.resource_id}"] ~ button:before`).css('color', 'gold');
+  //     }
+  //   })
+  // }
+
+  //Make all liked buttons red when document ready
+  // const showLiked = (userID) => {
+  //     $.ajax({
+  //     method: "GET",
+  //     url: "/api/showLiked",
+  //     data: userID
+  //   }).done( (liked) => {
+  //     $('.like').css('color', 'black');
+  //     console.log('resourceID from showLiked: ' + liked);
+  //     for (like of liked){
+  //       $(`.${like.resource_id} .like`).css("color", "red");
+  //     }
+  //   })
+  // }
+
+  // showLiked($('input[name="userID"]').val());
 
   const searchRes = (searchFormData) => {
     console.log(searchFormData);
@@ -46,9 +61,15 @@ $(() => {
   const addLike = () => {
     $.ajax({
       method: "POST",
-      url: "/api/like"
-    }).done( () => {
-       showLiked();
+      url: "/api/like",
+      data: {
+        userID: $('input[name="userID"]').val(),
+        resourceID: $('.resourceID').val()
+      }
+    }).done( (result) => {
+      console.log(result);
+      $('.resourceID').siblings('.fa-heart').css('color', 'red');
+       // showLiked(result[0].userID);
     })
   }
 
@@ -66,18 +87,23 @@ $(() => {
       method: "POST",
       url: "/api/comment",
       data: $("#add_comment").serialize()
-    }).done( () => {
+    }).done( (result) => {
       $('input[name="comment"]').trigger('reset');
       $('#add_comment').slideUp();
+      $('<div>').text(result.rows[0].comment).appendTo($('.modal-body'));
     })
   }
 
-  const addRating = () =>{
+  const addRating = (rating) =>{
     $.ajax({
       method: "POST",
-      url: "/api/rating"
-    }).done( (result) => {
-      console.log('add rating result: ' + result);
+      url: "/api/rating",
+      data: {
+        userID: $('input[name="userID"]').val(),
+        resourceID: $('.resourceID').val(),
+        rating: $('.star_rating').val()
+      }
+    }).done( () => {
       $(`.star_rating .star value="${result[0].rating}"] ~ button:before`).css('color', 'gold');
     })
   }
@@ -95,13 +121,9 @@ $(() => {
   });
 
   //Like button
-  $('.like').on('click', () => {
+  $('.like').on('submit', (event) => {
     event.preventDefault();
-    if($('.like').css('color') === 'red'){
-      unLike();
-    }else{
       addLike();
-    }
   });
 
   //Show comment box
@@ -115,10 +137,11 @@ $(() => {
     event.preventDefault();
     addComment();
   });
+
   //Add rating
-  $('.star_rating .star').on('submit', (event) => {
+  $('.star_rating').on('submit', (rating) => {
     event.preventDefault();
-    addRating();
+    addRating(rating);
   });
 
   //Coded by Carlos
@@ -142,6 +165,20 @@ $(() => {
       }
   });
 
+  // runs js searcher (jquery plugin)
+  $("#user-resource-container").searcher({
+      itemSelector: ".resource",
+      textSelector: "div",
+      inputSelector: "#resourcesearchinput",
+      toggle: function(item, containsText) {
+          // use a typically jQuery effect instead of simply showing/hiding the item element
+          if (containsText)
+              $(item).fadeIn();
+          else
+              $(item).fadeOut();
+      }
+  });
+
 
   // Helpers end
 
@@ -152,18 +189,43 @@ $(() => {
       url: `/api/resources/json/${userID}`
     })
     .done( (data) => {
-      $.each(data, (index, arrvalue) => {
-        $temprow = $("<tr>").attr("data-id", arrvalue.id).appendTo($("#table-resources"));
-        $.each(arrvalue, (key, objvalue) => {
-          $("<td>").text(objvalue).appendTo($temprow);
-        })
-      });
+
+      let colsPerRow = 4;
+      let numOfRowsToCreate = Math.ceil(data.length / colsPerRow);
+      let arrIndex = 0;
+      for (let rows = 1; rows <= numOfRowsToCreate; rows++) {
+
+        $resourcerow = $("<div>").addClass("row");
+
+        for (let cols = 1; cols <= colsPerRow; cols++) {
+          if (data[arrIndex] === undefined) {
+            break;
+          }
+          $resourcecol = $("<div>").addClass("col-xs-2 col-md-3").appendTo($resourcerow);
+          $resourcedata = $("<div>").addClass("resourcedata").appendTo($resourcecol);
+
+          $resource = $("<div>").addClass("resource")
+                      .attr({
+                        'data-toggle': 'modal',
+                        'data-target': '#update-resource-modal',
+                        'data-id': data[arrIndex].id,
+                        id: data[arrIndex].id
+                      }).appendTo($resourcedata)
+
+          $resource.append($("<div>").addClass("title").text(data[arrIndex].title));
+          $resource.append($("<div>").addClass("url").text(data[arrIndex].url));
+          $resource.append($("<div>").addClass("description").text(data[arrIndex].description));
+          arrIndex += 1
+        }
+        $("#user-resource-container").append($resourcerow);
+      }
 
     })
     .fail( (error) => {
       console.error(error);
     })
   };
+  getUserResources($("#nav-container-div")[0].dataset.userid);
 
   const getResourceToUpdate = (id) => {
     $.ajax({
@@ -172,10 +234,9 @@ $(() => {
     })
     .done( (data) => {
       var modal = $('#update-resource-modal');
-      modal.find('#title').value(data[0].title)
-      modal.find('#url').value(data[0].url)
-      modal.find('#description').value(data[0].description)
-
+      modal.find('#title').val(data[0].title)
+      modal.find('#url').val(data[0].url)
+      modal.find('#description').val(data[0].description)
     })
     .fail( (error) => {
       console.error(error);
@@ -241,10 +302,12 @@ $(() => {
                       }).appendTo($resourcedata)
 
           $resource.append($("<div>").addClass("title").text(data[arrIndex].title));
-          $resource.append($("<div>").addClass("url").text(data[arrIndex].url));
+          $linked = $("<div>").addClass("url").text(data[arrIndex].url);
+          $link = $('<a>').attr("href", data[arrIndex].url).attr("target", "_blank").append($linked);
+          $resource.append($link);
           $resource.append($("<div>").addClass("description").text(data[arrIndex].description));
-          $resource.append($("<div>").addClass("handle").text(data[arrIndex].created_by));
-          $resource.append($("<div>").addClass("stats").text("Loved by:"));
+          $resource.append($("<div>").addClass("handle").text('by @' + data[arrIndex].handle));
+          //$resource.append($("<div>").addClass("stats").text("Loved by:"));
           arrIndex += 1
         }
         $("#resource-container").append($resourcerow);
@@ -279,7 +342,7 @@ $(() => {
       modal.find('.modal-title').text(data[0].title)
       modal.find('.modal-body h5').text(data[0].url)
       modal.find('.modal-body h6').text(data[0].description)
-      modal.find('#resourceID').val(data[0].id)
+      modal.find('.resourceID').val(data[0].id)
     })
     .fail( (error) => {
       console.error(error);
@@ -301,8 +364,8 @@ $(() => {
     insertResource();
   });
 
-  // Handles the modal that updates a new resource.
-  $('#new-resource-modal').on('show.bs.modal', function (event) {
+  // Handles the modal that updates a resource.
+  $('#update-resource-modal').on('show.bs.modal', function (event) {
     let divResource = $(event.relatedTarget) // Button that triggered the modal
     let resourceID = divResource.data('id') // Extract info from data-* attributes
     // call the function that makes the ajax call to the route in the api. The function will update the modal elements.

@@ -17,19 +17,18 @@ module.exports = (knex) => {
         description: req.body.description,
         created_by: req.body.createdBy
       }).then( (results) => {
-          //console.log("Response: ", res);
-          res.status(200).send(results);
+          res.redirect("/myresources")
       }, (rej) => {
         res.status(500).send(rej);
       });
     });
 
   // Update a resource.
-  router.put("/update", (req, res) => {
-    knex(tableResources)
+  router.post("/u/", (req, res) => {
+    knex("resources")
     .where({
       id: req.body.id,
-      created_by: req.body.created_by
+      created_by: req.body.createdBy
     })
     .update({
       url: req.body.url,
@@ -37,13 +36,14 @@ module.exports = (knex) => {
       description: req.body.description
     })
     .then( (results) => {
-      //console.log("Res after update: ", res)
-      res.status(200).send(results);
+      res.redirect("/myresources")
+
     }, (rej) => {
-      //console.error("Error when trying to update: ", rej);
       res.status(400).send(rej);
     })
   });
+
+
 
   // get all resources for the user. JSON format.
   router.get("/json/:userid", (req, res) => {
@@ -93,8 +93,9 @@ module.exports = (knex) => {
   // get all resources.
   router.get("/", (req, res) => {
     knex
-      .select("*")
+      .select("resources.*", "users.handle")
       .from(tableResources)
+      .innerJoin('users', 'users.id', 'resources.created_by')
       .then( (results) => {
         res.status(200).json(results);
       }, (rej) => {

@@ -8,16 +8,15 @@ module.exports = (knex) => {
   //Gets req.body.cat_id from dropdown of existing categories.
   //Create dropdown menu in html using <select> and <option>. Submit using <input type="submit">
     console.log("cat_id: " + req.body.cat_id);
-    console.log("reso_id: " + req.body.reso_id);
+    console.log("reso_id: " + req.body.resourceID);
         knex('cat_reso')
         .insert({
           cat_id: req.body.cat_id,
-          resource_id: req.body.reso_id
+          resource_id: req.body.resourceID
         })
-        .then((result) => {
-          console.log(result);
+        .then(() => {
+          res.redirect("/userhome");
         })
-    res.redirect("/");
   });
   return router;
 }

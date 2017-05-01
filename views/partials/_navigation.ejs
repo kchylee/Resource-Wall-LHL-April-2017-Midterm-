@@ -2,7 +2,7 @@
 
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
+      <div id="nav-container-div" class="container" data-userID="<%= user.id %>">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
@@ -17,13 +17,13 @@
 
 
             <li><a data-toggle="modal" data-target="#new-resource-modal">New Resource</a></li>
-            <li><a href="">My Resources</a></li>
+            <li><a href="/myresources">My Resources</a></li>
             <li><a href="/profile">Profile</a></li>
             <li><a href="/logout">Logout</a></li>
           </ul>
 
           <div class="pull-right">
-            <label for="searchresources">Search Resources</label>
+            <label for="searchresources">Search</label>
             <input name="searchresources" id="resourcesearchinput" />
           </div>
 

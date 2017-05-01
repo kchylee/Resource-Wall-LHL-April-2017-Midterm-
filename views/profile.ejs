@@ -27,30 +27,41 @@
 
           <!-- LOCAL INFORMATION -->
           <!-- <div class="col-sm-6"> -->
-              <div class="well">
-                  <h3><span class="fa fa-user"></span> User Profile </h3>
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm-6 col-md-6">
+                    <h3><span class="fa fa-user"></span> User Profile </h3>
+                  </div>
+                  <% if (user.password !== null) { %>
+                  <div class="col-sm-6 col-md-6">
+                    <a href="/change_password" class="btn btn-primary pull-right">Change Password</a>
+                  </div>
+                  <% } %>
+                </div>
+              </div>
 
-                  <% if (!user.displayName) { %>
-                      <ul>
-                       <li><strong>First name</strong>: <%= user.first_name %></li>
-                       <li><strong>Last name</strong>: <%= user.last_name %></li>
-                       <li><strong>Username</strong>: <%= user.handle %></li>
-                       <li><strong>email</strong>: <%= user.email %></li>
-                       <br>
-                      </ul>
-                      <% if (user.password !== null) { %>
-                        <a href="/change_password" class="btn btn-default">Change Password</a>
-                      <% } %>
-                  <% } if (user.displayName) { %>
-                      <ul>
-                       <li><strong>ID</strong>: <%= user.id %></li>
-                       <li><strong>Username</strong>: <%= user.username %></li>
-                       <li><strong>Name</strong>: <%= user.displayName %></li>
-                       <li><strong>Email</strong>: <%= user.emails[0].value %></li>
-                       <li><strong>Github Profile</strong>: <a target="_blank" href=<%= user.profileUrl %>> <%= user.profileUrl %></a></li>
-                       <br>
-                      </ul>
-                  <% }; %>
+              <div class="well">
+                    <form action="/api/users/update/" method="POST">
+                      <div class="form-group">
+                      <label class="control-label" for="first_name">First Name:</label>
+                      <input class="form-control" type="text" name="first_name" value="<%= user.first_name %>">
+                      </div>
+
+                      <div class="form-group">
+                      <label class="control-label" for="first_name">Last Name:</label>
+                      <input class="form-control" type="text" name="last_name" value="<%= user.last_name %>">
+                      </div>
+
+                      <div class="form-group">
+                      <label class="control-label" for="first_name">Username:</label>
+                      <input class="form-control" type="text" name="handle" value="<%= user.handle %>">
+                      <input type="hidden" name="id" value="<%= user.id %>">
+                      </div>
+
+                      <div class="form-group">
+                        <button class="btn btn-warning btn-block" type="Submit">Update Profile</button>
+                      </div>
+                    </form>
               </div>
           <!-- </div> -->
       </div>
