@@ -6,7 +6,7 @@ const router  = express.Router();
 module.exports = (knex) => {
 
   router.post("/", (req, res) => {
-    console.log('req body resource_id: ' + req.body.resource_id);
+    console.log("inside unlike")
     knex('likes')
     .where({
       user_id: 2, //Need to get from req.session

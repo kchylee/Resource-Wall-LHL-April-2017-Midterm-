@@ -12,6 +12,21 @@ $(() => {
     }
   });
 
+  //Make all liked buttons red when document ready
+  const showLiked = () => {
+      $.ajax({
+      method: "GET",
+      url: "/api/showLiked"
+    }).done( (liked) => {
+      $('.like').css('color', 'black');
+      for (like of liked){
+        $(`${like.resource_id} .like`).css("color", "red");
+      }
+    })
+  }
+
+  showLiked();
+
   const searchRes = (searchFormData) => {
     console.log(searchFormData);
     $.ajax({
@@ -33,7 +48,7 @@ $(() => {
       method: "POST",
       url: "/api/like"
     }).done( () => {
-      $('button[name="like"]').find('.fa-heart').css('color', 'red'); //NEEDS WORK; heart should be highlighted according to Like table
+       showLiked();
     })
   }
 
@@ -42,10 +57,8 @@ $(() => {
       method: "POST",
       url: "/api/unlike"
     }).done( () => {
-      $('button[name="like"]').find('.fa-heart').css('color', 'black');
+      showLiked();
     })
-
-
   }
 
   const addComment = () => {
@@ -59,16 +72,15 @@ $(() => {
     })
   }
 
-  const addRating = (rating) =>{
+  const addRating = () =>{
     $.ajax({
       method: "POST",
-      url: "/api/rating",
-      data: rating
+      url: "/api/rating"
     }).done( (result) => {
-      $(`.star_rating button[name="star" value="${result}"] ~ button:before`).css('color', 'gold');
+      console.log('add rating result: ' + result);
+      $(`.star_rating .star value="${result[0].rating}"] ~ button:before`).css('color', 'gold');
     })
   }
-
 
   //Searches database for resources
   $('#search').on('submit', () => {
@@ -79,22 +91,21 @@ $(() => {
   //Toggle search field
   $('#searchToggle').on('click', () => {
     event.preventDefault();
-    $('form #search').slideUp();
+    $('#search').slideToggle();
   });
 
   //Like button
-  $('button[name="like"]').on('click', () => {
+  $('.like').on('click', () => {
     event.preventDefault();
-    if($('button[name="like"]').find('.fa-heart').css('color') === 'red'){
-      unlike();
+    if($('.like').css('color') === 'red'){
+      unLike();
     }else{
       addLike();
     }
   });
 
-
   //Show comment box
-  $('button[name="show_comment_field"]').on('click', () => {
+  $('.show_comment_field').on('click', () => {
     event.preventDefault();
     $('#add_comment').slideToggle();
   });
@@ -105,11 +116,10 @@ $(() => {
     addComment();
   });
   //Add rating
-  $('button[name="star"]').on('click', (event) => {
+  $('.star_rating .star').on('submit', (event) => {
     event.preventDefault();
-    addRating($('button[name="star"]').val());
+    addRating();
   });
-
 
   //Coded by Carlos
   //Helper functions
