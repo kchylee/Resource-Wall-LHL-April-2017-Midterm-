@@ -8,7 +8,7 @@ const bcrypt      = require('bcrypt-nodejs')
 module.exports = function(app, passport) {
 
 // Home Page
-app.get("/home", (req, res) => {
+app.get("/home", isLoggedIn, (req, res) => {
   console.log("request at Root:",req.user);
   res.render("home", { user: req.user });
 });
@@ -76,14 +76,14 @@ app.get('/login', (req, res) => {
       });
     });
 
-  app.post('/change_password', passport.authenticate('local-change_password', {
+  app.post('/change_password', isLoggedIn, passport.authenticate('local-change_password', {
       successRedirect : '/profile', // redirect to the secure profile section
       failureRedirect : '/change_password', // redirect back to the signup page if there is an error
       failureFlash : true // allow flash messages
   }));
 
   // LOGOUT ==============================
-  app.get('/logout', function(req, res) {
+  app.get('/logout', isLoggedIn, function(req, res) {
       console.log("before logout:", req.session)
       req.logout();
       console.log("after logout:",req.session);

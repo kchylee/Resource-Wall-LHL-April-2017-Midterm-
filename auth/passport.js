@@ -183,15 +183,50 @@ module.exports = function(passport) {
       },
       function(accessToken, refreshToken, profile, done) {
         // asynchronous verification, for effect...
+        console.log(profile)
         process.nextTick(function () {
-
           // To keep the example simple, the user's GitHub profile is returned to
           // represent the logged-in user.  In a typical application, you would want
           // to associate the GitHub account with a user record in your database,
           // and return that user instead.
-          return done(null, profile);
-        });
-      }
-    ));
+          // console.log('signing up')
+          knex
+          .select("*")
+          .from("users")
+          .where("email","=",profile.emails[0].value)
+          .then((results, err) => {
+            if (results.length !== 0) {
+              console.log("Email found");
+              return done(null,results[0]);
+            } else {
+              const nameArr = profile.displayName.split(" ");
+              knex("users")
+              .insert({"first_name": nameArr[0],
+                "last_name": nameArr[nameArr.length-1],
+                "email": profile.emails[0].value,
+                "handle": profile.username,
+                "password": null }) //req.body.password})
+              .then(() => {
+                let user_id = knex
+                    .select("*")
+                    .from("users")
+                    .where("email","=",profile.emails[0].value)
+                    .then((results, err) => {
+                        let user = {
+                            id: profile.id,
+                            local: {
+                            email: profile.emails[0].value
+                            }
+                        }
+                    console.log(user);
+                    return done(null, user);
+                    })
+                })
+              }
+            })
+          .catch((err) => done(err));
+          })
+        }));
+          //return done(null, profile);
 
 }
