@@ -6,7 +6,7 @@ const router  = express.Router();
 module.exports = (knex) => {
 
   router.post("/", (req, res) => {
-    console.log('req body star: ' + req.body.star);
+    console.log("Star: " + req.body.star);
     knex('ratings')
     .returning("*")
     .insert({
@@ -15,7 +15,7 @@ module.exports = (knex) => {
       rating: req.body.star
     })
     .then( (result) => {
-      res.status(200).send(result);
+      res.json(result);
     })
   })
   return router;

@@ -25,6 +25,7 @@ const addCatItems = require("./routes/addToCategory");
 const getCat = require("./routes/getCategory");
 const addLikes = require("./routes/likes");
 const unlike = require("./routes/unlike");
+const showLiked = require("./routes/showLiked");
 const addComment = require("./routes/addComment");
 const addRating = require("./routes/rating");
 // passport for user authentication
@@ -80,7 +81,7 @@ app.use("/api/like", addLikes(knex));
 app.use("/api/comment", addComment(knex));
 app.use("/api/rating", addRating(knex));
 app.use("/api/unlike", unlike(knex));
-
+app.use("/api/showLiked", showLiked(knex));
 app.get("/", (req, res) => {
    res.render("userhome");
 });
