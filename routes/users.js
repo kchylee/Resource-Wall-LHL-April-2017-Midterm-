@@ -10,29 +10,28 @@ module.exports = (knex) => {
     knex
       .select("*")
       .from("users")
-      .then((results) => {
-        res.json(results);
+      .then(  (results) => {
+        res.status(200).send(results);
+    }, (rej) => {
+      res.status(400).send(rej);
     })
-      .catch( (e) => {
-        console.error(e);
-      })
   });
 
   // Update a user.
-  router.put("/update", (req, res) => {
+  router.post("/update/", (req, res) => {
+
     knex(tableUsers)
     .where({
-      id: req.body.id,
+      id: req.body.id
     })
     .update({
       first_name: req.body.first_name,
       last_name: req.body.last_name,
-      email: req.body.email,
-      handle: req.body.handle,
-      password: req.body.password
+      handle: req.body.handle
     })
     .then( (results) => {
-      res.status(200).send(results);
+      res.redirect("/profile")
+
     }, (rej) => {
       res.status(400).send(rej);
     })
@@ -42,7 +41,7 @@ module.exports = (knex) => {
   router.delete("/", (req, res) => {
     knex(tableUsers)
     .where({
-      id: req.body.id,
+      id: req.body.id
     })
     .update({
       archived: 1,

@@ -165,6 +165,20 @@ $(() => {
       }
   });
 
+  // runs js searcher (jquery plugin)
+  $("#user-resource-container").searcher({
+      itemSelector: ".resource",
+      textSelector: "div",
+      inputSelector: "#resourcesearchinput",
+      toggle: function(item, containsText) {
+          // use a typically jQuery effect instead of simply showing/hiding the item element
+          if (containsText)
+              $(item).fadeIn();
+          else
+              $(item).fadeOut();
+      }
+  });
+
 
   // Helpers end
 
@@ -175,18 +189,43 @@ $(() => {
       url: `/api/resources/json/${userID}`
     })
     .done( (data) => {
-      $.each(data, (index, arrvalue) => {
-        $temprow = $("<tr>").attr("data-id", arrvalue.id).appendTo($("#table-resources"));
-        $.each(arrvalue, (key, objvalue) => {
-          $("<td>").text(objvalue).appendTo($temprow);
-        })
-      });
+
+      let colsPerRow = 4;
+      let numOfRowsToCreate = Math.ceil(data.length / colsPerRow);
+      let arrIndex = 0;
+      for (let rows = 1; rows <= numOfRowsToCreate; rows++) {
+
+        $resourcerow = $("<div>").addClass("row");
+
+        for (let cols = 1; cols <= colsPerRow; cols++) {
+          if (data[arrIndex] === undefined) {
+            break;
+          }
+          $resourcecol = $("<div>").addClass("col-xs-2 col-md-3").appendTo($resourcerow);
+          $resourcedata = $("<div>").addClass("resourcedata").appendTo($resourcecol);
+
+          $resource = $("<div>").addClass("resource")
+                      .attr({
+                        'data-toggle': 'modal',
+                        'data-target': '#update-resource-modal',
+                        'data-id': data[arrIndex].id,
+                        id: data[arrIndex].id
+                      }).appendTo($resourcedata)
+
+          $resource.append($("<div>").addClass("title").text(data[arrIndex].title));
+          $resource.append($("<div>").addClass("url").text(data[arrIndex].url));
+          $resource.append($("<div>").addClass("description").text(data[arrIndex].description));
+          arrIndex += 1
+        }
+        $("#user-resource-container").append($resourcerow);
+      }
 
     })
     .fail( (error) => {
       console.error(error);
     })
   };
+  getUserResources($("#nav-container-div")[0].dataset.userid);
 
   const getResourceToUpdate = (id) => {
     $.ajax({
@@ -195,10 +234,9 @@ $(() => {
     })
     .done( (data) => {
       var modal = $('#update-resource-modal');
-      modal.find('#title').value(data[0].title)
-      modal.find('#url').value(data[0].url)
-      modal.find('#description').value(data[0].description)
-
+      modal.find('#title').val(data[0].title)
+      modal.find('#url').val(data[0].url)
+      modal.find('#description').val(data[0].description)
     })
     .fail( (error) => {
       console.error(error);
@@ -264,10 +302,12 @@ $(() => {
                       }).appendTo($resourcedata)
 
           $resource.append($("<div>").addClass("title").text(data[arrIndex].title));
-          $resource.append($("<div>").addClass("url").text(data[arrIndex].url));
+          $linked = $("<div>").addClass("url").text(data[arrIndex].url);
+          $link = $('<a>').attr("href", data[arrIndex].url).attr("target", "_blank").append($linked);
+          $resource.append($link);
           $resource.append($("<div>").addClass("description").text(data[arrIndex].description));
-          $resource.append($("<div>").addClass("handle").text(data[arrIndex].created_by));
-          $resource.append($("<div>").addClass("stats").text("Loved by:"));
+          $resource.append($("<div>").addClass("handle").text('by @' + data[arrIndex].handle));
+          //$resource.append($("<div>").addClass("stats").text("Loved by:"));
           arrIndex += 1
         }
         $("#resource-container").append($resourcerow);
@@ -324,8 +364,8 @@ $(() => {
     insertResource();
   });
 
-  // Handles the modal that updates a new resource.
-  $('#new-resource-modal').on('show.bs.modal', function (event) {
+  // Handles the modal that updates a resource.
+  $('#update-resource-modal').on('show.bs.modal', function (event) {
     let divResource = $(event.relatedTarget) // Button that triggered the modal
     let resourceID = divResource.data('id') // Extract info from data-* attributes
     // call the function that makes the ajax call to the route in the api. The function will update the modal elements.
