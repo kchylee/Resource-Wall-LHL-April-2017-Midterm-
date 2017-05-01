@@ -38,7 +38,9 @@
                        <li><strong>email</strong>: <%= user.email %></li>
                        <br>
                       </ul>
-                      <a href="/change_password" class="btn btn-default">Change Password</a>
+                      <% if (user.password !== null) { %>
+                        <a href="/change_password" class="btn btn-default">Change Password</a>
+                      <% } %>
                   <% } if (user.displayName) { %>
                       <ul>
                        <li><strong>ID</strong>: <%= user.id %></li>
