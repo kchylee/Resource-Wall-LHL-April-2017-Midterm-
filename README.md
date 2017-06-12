@@ -1,5 +1,5 @@
 # Resource Wall
-Resource wall allows users to store, categorize, and share web resources. It is built with EJS, Express.js, Knex.js, and PostgreSQL.
+Resource Wall allows users to store, categorize, and share web resources/URLs. It is built with EJS, Express.js, Knex.js, and PostgreSQL.
 
 ## Getting Started
 
